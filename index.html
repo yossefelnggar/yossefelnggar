@@ -1,144 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hacker Terminal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>موقعي البسيط المقبول في جوجل أدسنس</title>
+  <meta name="description" content="موقع بسيط يحتوي على محتوى نظيف وسهل القبول في جوجل أدسنس" />
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background-color: #000;
-      color: #00ff00;
-      font-family: 'Courier New', Courier, monospace;
-      overflow: hidden;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      background: #f9f9f9;
+      color: #333;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
     }
-
-    .terminal {
+    header, footer {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    article {
+      background: white;
       padding: 20px;
-      height: 100vh;
-      box-sizing: border-box;
-      white-space: pre-wrap;
-      overflow-y: auto;
-      font-size: 16px;
+      border-radius: 6px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
     }
-
-    .blink {
-      animation: blink 1s step-start infinite;
+    a {
+      color: #3498db;
+      text-decoration: none;
     }
-
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-
-    #secretPanel {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #111;
-      color: white;
-      padding: 15px;
-      border: 1px solid #00ff00;
-      display: none;
-      z-index: 10;
-      border-radius: 8px;
-    }
-
-    #toggleButton {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      width: 20px;
-      height: 20px;
-      background: transparent;
-      border: none;
-      color: #00ff00;
-      cursor: pointer;
-    }
-
-    @media(max-width: 768px) {
-      .terminal {
-        font-size: 14px;
-      }
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="terminal" id="terminal"></div>
-  <div id="secretPanel">
-    <strong>⚠️ تنبيه:</strong><br>
-    هذا الموقع لغرض العرض فقط ولا يحتوي على أدوات اختراق حقيقية.
-  </div>
-  <button id="toggleButton" onclick="togglePanel()">.</button>
 
-  <audio id="typeSound" src="https://www.soundjay.com/mechanical/keyboard-1.mp3" preload="auto"></audio>
+<header>
+  <h1>مرحبا بك في موقعي</h1>
+  <p>محتوى مفيد وبسيط يساعدك في التعلم</p>
+</header>
 
-  <script>
-    const terminal = document.getElementById("terminal");
-    const typeSound = document.getElementById("typeSound");
-    const lines = [
-      "[ SYSTEM ] Booting virtual shell...",
-      "[ ACCESS ] Cracking Wi-Fi: NETWORK_5G...",
-      "[ ACCESS ] Success ✅",
-      "[ LOGIN  ] Bypassing admin credentials...",
-      "[ LOGIN  ] Access token granted.",
-      "[ FILES  ] Scanning 2500+ confidential files...",
-      "[ TRANSFER ] Uploading to remote cloud...",
-      "[ CLEANUP ] Deleting logs...",
-      "[ EXIT ] Closing connection...",
-      "[ STATUS ] Operation completed.",
-    ];
+<article>
+  <h2>مقدمة عن الموقع</h2>
+  <p>هذا الموقع تم إنشاؤه ليكون بسيطًا وسهل القبول في جوجل أدسنس، مع محتوى نظيف ومفيد للزوار. يمكنك إضافة المزيد من المقالات أو المواضيع المفيدة بنفس النمط.</p>
+  
+  <h3>نصائح للقبول في جوجل أدسنس</h3>
+  <ul>
+    <li>استخدم محتوى أصلي وغير منقول.</li>
+    <li>تأكد من وجود صفحات مهمة: من نحن، سياسة الخصوصية، اتصل بنا.</li>
+    <li>لا تستخدم محتوى ممنوع مثل حقوق النشر أو مواد غير قانونية.</li>
+    <li>تصميم الموقع يكون سهل التصفح ومتجاوب مع جميع الأجهزة.</li>
+    <li>سرعة تحميل الموقع تكون جيدة.</li>
+  </ul>
+  
+  <h3>صفحات أخرى مهمة (يمكنك إضافتها لاحقًا)</h3>
+  <ul>
+    <li><a href="#">من نحن</a></li>
+    <li><a href="#">سياسة الخصوصية</a></li>
+    <li><a href="#">اتصل بنا</a></li>
+  </ul>
+</article>
 
-    let index = 0;
+<footer>
+  <p>© 2025 موقعي البسيط. جميع الحقوق محفوظة.</p>
+</footer>
 
-    function typeLine(text, i = 0) {
-      if (i < text.length) {
-        terminal.innerHTML += text.charAt(i);
-        typeSound.currentTime = 0;
-        typeSound.play();
-        setTimeout(() => typeLine(text, i + 1), 30);
-      } else {
-        terminal.innerHTML += "\n";
-        index++;
-        if (index < lines.length) {
-          setTimeout(() => typeLine(lines[index]), 500);
-        } else {
-          setTimeout(generateFakeLogs, 2000);
-        }
-      }
-    }
-
-    function generateFakeLogs() {
-      setInterval(() => {
-        const time = new Date().toLocaleTimeString();
-        const log = `[${time}] > ` + generateRandomString();
-        terminal.innerHTML += log + "\n";
-        terminal.scrollTop = terminal.scrollHeight;
-      }, 600);
-    }
-
-    function generateRandomString() {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      let str = "";
-      for (let i = 0; i < 32; i++) {
-        str += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return str;
-    }
-
-    function togglePanel() {
-      const panel = document.getElementById("secretPanel");
-      panel.style.display = (panel.style.display === "block") ? "none" : "block";
-    }
-
-    // Start typing the initial lines
-    typeLine(lines[index]);
-
-    // Auto-scroll
-    const observer = new MutationObserver(() => {
-      terminal.scrollTop = terminal.scrollHeight;
-    });
-    observer.observe(terminal, { childList: true });
-  </script>
 </body>
 </html>
