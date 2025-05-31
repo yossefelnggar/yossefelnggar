@@ -1,45 +1,144 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        <h1>video</h1>
-        <p>
-           <b>welcome</b> 
-           <br>
-           <strong>to</strong>
-        
-         <br>   
-            
-           <i>web</i> 
-             
-            <em>site</em> 
-          <br> 
-                                    <u> <small>learning programin</small> </u>
-            yossef elnggar
-        
-        </p>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hacker Terminal</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
 
-        <video controls width="400" loop muted poster="imge/Screenshot 2025-04-14 231142.png">
-            <source src="video/[arabseed].The.Monkey.2025.720p.Extended.WEB.mp4" type="video/mp4">
+    .terminal {
+      padding: 20px;
+      height: 100vh;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      font-size: 16px;
+    }
 
+    .blink {
+      animation: blink 1s step-start infinite;
+    }
 
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
 
+    #secretPanel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #111;
+      color: white;
+      padding: 15px;
+      border: 1px solid #00ff00;
+      display: none;
+      z-index: 10;
+      border-radius: 8px;
+    }
 
+    #toggleButton {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 20px;
+      height: 20px;
+      background: transparent;
+      border: none;
+      color: #00ff00;
+      cursor: pointer;
+    }
 
-        </video>
-        <br>
-       <video controls width="400">
-      <source src="video/one.mp4">
+    @media(max-width: 768px) {
+      .terminal {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal" id="terminal"></div>
+  <div id="secretPanel">
+    <strong>⚠️ تنبيه:</strong><br>
+    هذا الموقع لغرض العرض فقط ولا يحتوي على أدوات اختراق حقيقية.
+  </div>
+  <button id="toggleButton" onclick="togglePanel()">.</button>
 
+  <audio id="typeSound" src="https://www.soundjay.com/mechanical/keyboard-1.mp3" preload="auto"></audio>
 
+  <script>
+    const terminal = document.getElementById("terminal");
+    const typeSound = document.getElementById("typeSound");
+    const lines = [
+      "[ SYSTEM ] Booting virtual shell...",
+      "[ ACCESS ] Cracking Wi-Fi: NETWORK_5G...",
+      "[ ACCESS ] Success ✅",
+      "[ LOGIN  ] Bypassing admin credentials...",
+      "[ LOGIN  ] Access token granted.",
+      "[ FILES  ] Scanning 2500+ confidential files...",
+      "[ TRANSFER ] Uploading to remote cloud...",
+      "[ CLEANUP ] Deleting logs...",
+      "[ EXIT ] Closing connection...",
+      "[ STATUS ] Operation completed.",
+    ];
 
+    let index = 0;
 
-       </video>
-       <img src="imge/Screenshot 2025-04-14 231142.png" width="300">
-         
-  
-  
-  
-  
-  
-    </body>
+    function typeLine(text, i = 0) {
+      if (i < text.length) {
+        terminal.innerHTML += text.charAt(i);
+        typeSound.currentTime = 0;
+        typeSound.play();
+        setTimeout(() => typeLine(text, i + 1), 30);
+      } else {
+        terminal.innerHTML += "\n";
+        index++;
+        if (index < lines.length) {
+          setTimeout(() => typeLine(lines[index]), 500);
+        } else {
+          setTimeout(generateFakeLogs, 2000);
+        }
+      }
+    }
+
+    function generateFakeLogs() {
+      setInterval(() => {
+        const time = new Date().toLocaleTimeString();
+        const log = `[${time}] > ` + generateRandomString();
+        terminal.innerHTML += log + "\n";
+        terminal.scrollTop = terminal.scrollHeight;
+      }, 600);
+    }
+
+    function generateRandomString() {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let str = "";
+      for (let i = 0; i < 32; i++) {
+        str += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return str;
+    }
+
+    function togglePanel() {
+      const panel = document.getElementById("secretPanel");
+      panel.style.display = (panel.style.display === "block") ? "none" : "block";
+    }
+
+    // Start typing the initial lines
+    typeLine(lines[index]);
+
+    // Auto-scroll
+    const observer = new MutationObserver(() => {
+      terminal.scrollTop = terminal.scrollHeight;
+    });
+    observer.observe(terminal, { childList: true });
+  </script>
+</body>
 </html>
