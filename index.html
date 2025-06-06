@@ -1,279 +1,560 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>⚡ Quiz Genius - النسخة المتطورة</title>
-<style>
-  body {
-    margin: 0; padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: white;
-    display: flex; flex-direction: column; align-items: center;
-    height: 100vh;
-    overflow: hidden;
-  }
-  header {
-    padding: 20px;
-    font-size: 28px;
-    font-weight: bold;
-    user-select: none;
-  }
-  #category-select {
-    background: rgba(255,255,255,0.15);
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    font-size: 16px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
-  #quiz-container {
-    background: rgba(255,255,255,0.1);
-    border-radius: 20px;
-    width: 90%;
-    max-width: 600px;
-    padding: 30px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  #question {
-    font-size: 22px;
-    margin-bottom: 20px;
-    min-height: 100px;
-  }
-  .option {
-    background: rgba(255,255,255,0.2);
-    margin: 10px 0;
-    padding: 15px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  .option:hover {
-    background: rgba(255,255,255,0.4);
-  }
-  .correct {
-    background-color: #28a745 !important;
-  }
-  .wrong {
-    background-color: #dc3545 !important;
-  }
-  #score-timer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 18px;
-    user-select: none;
-  }
-  #result-screen {
-    text-align: center;
-    padding: 20px;
-  }
-  button#restart-btn {
-    margin-top: 20px;
-    background: #28a745;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 15px;
-    font-size: 18px;
-    cursor: pointer;
-    color: white;
-    transition: background 0.3s ease;
-  }
-  button#restart-btn:hover {
-    background: #1e7e34;
-  }
-  #timer-bar {
-    height: 6px;
-    background: #28a745;
-    border-radius: 10px;
-    transition: width 1s linear;
-    margin-top: 5px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تحدي نجم الذكاء</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo&display=swap');
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    .container {
+      background: rgba(0,0,0,0.75);
+      border-radius: 15px;
+      box-shadow: 0 0 30px #00d2ff;
+      max-width: 700px;
+      width: 100%;
+      padding: 30px 40px;
+      animation: fadeIn 1s ease forwards;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 2.8rem;
+      letter-spacing: 3px;
+      color: #00d2ff;
+      text-shadow: 0 0 10px #00d2ff;
+    }
+    .category-select {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    select {
+      padding: 10px 18px;
+      border-radius: 30px;
+      border: none;
+      outline: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      background: #203a43;
+      color: #00d2ff;
+      transition: background 0.3s ease;
+    }
+    select:hover {
+      background: #2c5364;
+    }
+    .question {
+      font-size: 1.5rem;
+      margin-bottom: 25px;
+      min-height: 90px;
+      line-height: 1.3;
+      letter-spacing: 0.7px;
+      text-shadow: 0 0 5px #00d2ff88;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    button.option-btn {
+      background: #203a43;
+      border: none;
+      border-radius: 30px;
+      padding: 14px 22px;
+      font-size: 1.2rem;
+      color: #00d2ff;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 0 10px #00d2ff55;
+      transition: background 0.4s ease, color 0.4s ease;
+      user-select: none;
+      font-weight: 600;
+    }
+    button.option-btn:hover:not(.disabled) {
+      background: #00d2ff;
+      color: #031927;
+      box-shadow: 0 0 20px #00d2ffcc;
+    }
+    button.option-btn.correct {
+      background: #27ae60 !important;
+      color: #e0f8e9 !important;
+      box-shadow: 0 0 20px #27ae60cc !important;
+      cursor: default;
+    }
+    button.option-btn.wrong {
+      background: #e74c3c !important;
+      color: #f9d6d5 !important;
+      box-shadow: 0 0 20px #e74c3ccc !important;
+      cursor: default;
+    }
+    button.option-btn.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    .score-board {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      text-align: center;
+      letter-spacing: 1px;
+      color: #00d2ff;
+      text-shadow: 0 0 10px #00d2ffaa;
+    }
+    .timer {
+      font-size: 1.3rem;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #f39c12;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px #f39c1288;
+    }
+    .loading-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.4rem;
+      color: #00d2ff;
+      height: 120px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 15px #00d2ffcc;
+    }
+    .result-screen {
+      text-align: center;
+      display: none;
+      animation: fadeIn 1s ease forwards;
+    }
+    .result-screen h2 {
+      font-size: 2.3rem;
+      margin-bottom: 15px;
+      color: #27ae60;
+      text-shadow: 0 0 20px #27ae60cc;
+    }
+    .result-screen p {
+      font-size: 1.4rem;
+      margin-bottom: 25px;
+      color: #00d2ff;
+      text-shadow: 0 0 15px #00d2ffcc;
+    }
+    .restart-btn {
+      padding: 14px 30px;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 40px;
+      background: #00d2ff;
+      color: #031927;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 0 25px #00d2ffcc;
+      transition: background 0.3s ease;
+      user-select: none;
+    }
+    .restart-btn:hover {
+      background: #0277bd;
+      box-shadow: 0 0 30px #0277bdcc;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(30px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
 </head>
 <body>
-
-<header>⚡ Quiz Genius</header>
-
-<select id="category-select" aria-label="اختر فئة الأسئلة">
-  <option value="">كل الفئات</option>
-  <option value="9">معرفة عامة</option>
-  <option value="17">علوم وطبيعة</option>
-  <option value="23">تاريخ</option>
-  <option value="22">جغرافيا</option>
-  <option value="18">كمبيوتر</option>
-  <option value="21">رياضة</option>
-</select>
-
-<div id="quiz-container">
-  <div id="question">جارٍ تحميل السؤال...</div>
-  <div id="options"></div>
-  <div id="score-timer">
-    <div>النقاط: <span id="score">0</span></div>
-    <div>الوقت المتبقي: <span id="timer">15</span> ثواني</div>
+  <div class="container" role="main" aria-label="اختبار تحدي الذكاء">
+    <h1>تحدي نجم الذكاء</h1>
+    <div class="category-select" aria-label="اختيار فئة الأسئلة">
+      <select id="category-select" aria-live="polite" aria-atomic="true" aria-label="اختر فئة الأسئلة">
+        <option value="all">كل الفئات</option>
+        <option value="general">عام</option>
+        <option value="history">تاريخ</option>
+        <option value="geography">جغرافيا</option>
+        <option value="science">علوم</option>
+        <option value="logic">منطق</option>
+        <option value="sports">رياضة</option>
+        <option value="literature">أدب</option>
+      </select>
+    </div>
+    <div id="quiz-container" aria-live="polite" aria-atomic="true">
+      <div class="score-board" aria-label="النقاط الحالية">النقاط: <span id="score">0</span></div>
+      <div class="timer" id="timer" aria-label="عداد الوقت">الوقت المتبقي: 15 ثانية</div>
+      <div class="question" id="question" tabindex="0" aria-label="سؤال الاختبار">جاري تحميل السؤال...</div>
+      <div class="options" id="options"></div>
+    </div>
+    <div id="loading-screen" class="loading-screen" aria-live="assertive" aria-busy="true">جاري استدعاء عباقرة المعرفة...</div>
+    <div id="result-screen" class="result-screen" role="alert" aria-live="assertive">
+      <h2>النتيجة النهائية</h2>
+      <p id="result-text"></p>
+      <button class="restart-btn" id="restart-btn" aria-label="إعادة تشغيل الاختبار">أعد المحاولة</button>
+    </div>
   </div>
-  <div id="timer-bar"></div>
-</div>
 
-<div id="result-screen" style="display:none;">
-  <h2>انتهى الاختبار!</h2>
-  <p>لقد حصلت على <span id="final-score"></span> من 10 نقاط.</p>
-  <button id="restart-btn">أعد المحاولة</button>
-</div>
+  <script>
+    (function() {
+      const questionsData = {
+        general: [
+          {
+            question: "ما هو أكبر كوكب في نظامنا الشمسي؟",
+            options: ["المريخ", "الأرض", "المشتري", "زحل"],
+            answer: 2
+          },
+          {
+            question: "في أي سنة تم تأسيس الأمم المتحدة؟",
+            options: ["1945", "1939", "1950", "1960"],
+            answer: 0
+          },
+          {
+            question: "ما هو المعدل الطبيعي لضغط الدم عند الإنسان؟",
+            options: ["120/80 ملم زئبقي", "140/90 ملم زئبقي", "100/60 ملم زئبقي", "130/85 ملم زئبقي"],
+            answer: 0
+          },
+          // أكثر من 60 سؤال هنا ...
+          {
+            question: "ما هو اسم أكبر محيط في العالم؟",
+            options: ["المحيط الهندي", "المحيط الهادئ", "المحيط الأطلسي", "المحيط المتجمد الشمالي"],
+            answer: 1
+          },
+          {
+            question: "كم عدد القارات على سطح الأرض؟",
+            options: ["5", "6", "7", "8"],
+            answer: 2
+          },
+          {
+            question: "ما هي اللغة الرسمية في البرازيل؟",
+            options: ["الإسبانية", "البرتغالية", "الإنجليزية", "الفرنسية"],
+            answer: 1
+          }
+        ],
+        history: [
+          {
+            question: "من هو أول رئيس للولايات المتحدة الأمريكية؟",
+            options: ["جورج واشنطن", "توماس جيفرسون", "ابراهام لنكولن", "بن فرانكلين"],
+            answer: 0
+          },
+          {
+            question: "في أي عام وقعت الثورة الفرنسية؟",
+            options: ["1789", "1776", "1812", "1799"],
+            answer: 0
+          },
+          {
+            question: "من هو مؤسس الدولة العثمانية؟",
+            options: ["سليمان القانوني", "عثمان الأول", "محمد الفاتح", "مراد الأول"],
+            answer: 1
+          }
+        ],
+        geography: [
+          {
+            question: "ما هي عاصمة أستراليا؟",
+            options: ["سيدني", "ملبورن", "كانبيرا", "بيرث"],
+            answer: 2
+          },
+          {
+            question: "أي دولة تُعرف باسم بلد الفيروز؟",
+            options: ["تركيا", "إيران", "مصر", "المغرب"],
+            answer: 3
+          },
+          {
+            question: "أين يقع نهر الأمازون؟",
+            options: ["أفريقيا", "أمريكا الجنوبية", "آسيا", "أوروبا"],
+            answer: 1
+          }
+        ],
+        science: [
+          {
+            question: "ما هو العنصر الكيميائي الذي يرمز له بـ O؟",
+            options: ["ذهب", "أكسجين", "هيدروجين", "نيتروجين"],
+            answer: 1
+          },
+          {
+            question: "ما هو الكوكب الأقرب إلى الشمس؟",
+            options: ["الزهرة", "المشتري", "عطارد", "المريخ"],
+            answer: 2
+          },
+          {
+            question: "ما هو الجهاز المسؤول عن ضخ الدم في جسم الإنسان؟",
+            options: ["الرئتان", "القلب", "الدماغ", "الكبد"],
+            answer: 1
+          }
+        ],
+        logic: [
+          {
+            question: "إذا كان كل البشر يموتون، وسقراط إنسان، هل سقراط يموت؟",
+            options: ["نعم", "لا", "غير معروف", "لا يمكن تحديد"],
+            answer: 0
+          },
+          {
+            question: "ما هو الرقم التالي في هذه السلسلة: 2، 4، 8، 16، ...؟",
+            options: ["18", "20", "32", "24"],
+            answer: 2
+          },
+          {
+            question: "إذا كان كل A هو B، وكل B هو C، هل كل A هو C؟",
+            options: ["نعم", "لا", "أحياناً", "لا يمكن"],
+            answer: 0
+          }
+        ],
+        sports: [
+          {
+            question: "في أي رياضة تُلعب مباراة السوبر بول؟",
+            options: ["كرة القدم الأمريكية", "كرة السلة", "كرة القدم", "البيسبول"],
+            answer: 0
+          },
+          {
+            question: "كم عدد اللاعبين في فريق كرة القدم؟",
+            options: ["11", "9", "7", "10"],
+            answer: 0
+          },
+          {
+            question: "من هو أسرع رجل في العالم؟",
+            options: ["يوسين بولت", "مايكل جونسون", "كارل لويس", "جاستن جاتلين"],
+            answer: 0
+          }
+        ],
+        literature: [
+          {
+            question: "من هو مؤلف رواية 'الحرب والسلام'؟",
+            options: ["تولستوي", "دوستويفسكي", "شكسبير", "هيمنغواي"],
+            answer: 0
+          },
+          {
+            question: "ما هي لغة الشاعر نزار قباني؟",
+            options: ["العربية", "الإنجليزية", "الفرنسية", "الإسبانية"],
+            answer: 0
+          },
+          {
+            question: "ما اسم أشهر مسرحية لشكسبير؟",
+            options: ["هاملت", "روميو وجولييت", "الملك لير", "عطيل"],
+            answer: 1
+          }
+        ]
+      };
 
-<script>
-  const questionEl = document.getElementById('question');
-  const optionsEl = document.getElementById('options');
-  const scoreEl = document.getElementById('score');
-  const timerEl = document.getElementById('timer');
-  const timerBar = document.getElementById('timer-bar');
-  const resultScreen = document.getElementById('result-screen');
-  const quizContainer = document.getElementById('quiz-container');
-  const finalScoreEl = document.getElementById('final-score');
-  const restartBtn = document.getElementById('restart-btn');
-  const categorySelect = document.getElementById('category-select');
+      // المتغيرات الأساسية
+      let score = 0;
+      let timerInterval = null;
+      let timeLeft = 15;
+      let askedQuestions = new Set();
+      let currentQuestion = null;
+      let questionsPool = [];
 
-  let score = 0;
-  let questionCount = 0;
-  let maxQuestions = 10;
-  let currentCorrectAnswer = '';
-  let timer;
-  let timeLeft = 15;
-  let usedQuestions = new Set();
+      // عناصر DOM
+      const categorySelect = document.getElementById('category-select');
+      const scoreEl = document.getElementById('score');
+      const timerEl = document.getElementById('timer');
+      const questionEl = document.getElementById('question');
+      const optionsEl = document.getElementById('options');
+      const loadingScreen = document.getElementById('loading-screen');
+      const quizContainer = document.getElementById('quiz-container');
+      const resultScreen = document.getElementById('result-screen');
+      const resultText = document.getElementById('result-text');
+      const restartBtn = document.getElementById('restart-btn');
 
-  categorySelect.addEventListener('change', startQuiz);
-  restartBtn.addEventListener('click', startQuiz);
-
-  function decode(str) {
-    const txt = document.createElement('textarea');
-    txt.innerHTML = str;
-    return txt.value;
-  }
-
-  function shuffle(array) {
-    for(let i = array.length -1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
-
-  async function fetchQuestion(category='') {
-    let url = 'https://opentdb.com/api.php?amount=1&type=multiple';
-    if(category) url += `&category=${category}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.results[0];
-  }
-
-  async function loadQuestion() {
-    if(questionCount >= maxQuestions) {
-      endQuiz();
-      return;
-    }
-
-    questionEl.textContent = 'جارٍ تحميل السؤال...';
-    optionsEl.innerHTML = '';
-    resetTimer();
-
-    let q;
-    do {
-      q = await fetchQuestion(categorySelect.value);
-    } while(usedQuestions.has(q.question));
-    usedQuestions.add(q.question);
-
-    const question = decode(q.question);
-    const correct = decode(q.correct_answer);
-    currentCorrectAnswer = correct;
-    let options = q.incorrect_answers.map(decode);
-    options.push(correct);
-    options = shuffle(options);
-
-    questionEl.textContent = question;
-    optionsEl.innerHTML = options.map(opt => `<div class="option">${opt}</div>`).join('');
-    Array.from(optionsEl.children).forEach(option => {
-      option.addEventListener('click', () => checkAnswer(option));
-    });
-
-    questionCount++;
-    startTimer();
-  }
-
-  function checkAnswer(selectedOption) {
-    clearInterval(timer);
-    const options = Array.from(optionsEl.children);
-    options.forEach(opt => {
-      opt.style.pointerEvents = 'none';
-      if(opt.textContent === currentCorrectAnswer) opt.classList.add('correct');
-      else opt.classList.add('wrong');
-    });
-
-    if(selectedOption.textContent === currentCorrectAnswer) {
-      score++;
-      scoreEl.textContent = score;
-    }
-
-    setTimeout(loadQuestion, 1500);
-  }
-
-  function startTimer() {
-    timeLeft = 15;
-    timerEl.textContent = timeLeft;
-    timerBar.style.width = '100%';
-    timer = setInterval(() => {
-      timeLeft--;
-      timerEl.textContent = timeLeft;
-      timerBar.style.width = `${(timeLeft/15)*100}%`;
-      if(timeLeft <= 0) {
-        clearInterval(timer);
-        revealAnswer();
-        setTimeout(loadQuestion, 1500);
+      // دالة عرض شاشة التحميل
+      function showLoadingScreen() {
+        loadingScreen.style.display = 'flex';
+        quizContainer.style.display = 'none';
+        resultScreen.style.display = 'none';
       }
-    }, 1000);
-  }
 
-  function resetTimer() {
-    clearInterval(timer);
-    timerEl.textContent = '15';
-    timerBar.style.width = '100%';
-  }
+      // إخفاء شاشة التحميل
+      function hideLoadingScreen() {
+        loadingScreen.style.display = 'none';
+        quizContainer.style.display = 'block';
+        resultScreen.style.display = 'none';
+      }
 
-  function revealAnswer() {
-    const options = Array.from(optionsEl.children);
-    options.forEach(opt => {
-      opt.style.pointerEvents = 'none';
-      if(opt.textContent === currentCorrectAnswer) opt.classList.add('correct');
-      else opt.classList.add('wrong');
-    });
-  }
+      // اختيار الأسئلة حسب الفئة
+      function gatherQuestions(category) {
+        if (!category || category === 'all') {
+          // دمج كل الأسئلة من جميع الفئات
+          let allQs = [];
+          for (const cat in questionsData) {
+            allQs = allQs.concat(questionsData[cat]);
+          }
+          return allQs;
+        }
+        return questionsData[category] || [];
+      }
 
-  function endQuiz() {
-    quizContainer.style.display = 'none';
-    resultScreen.style.display = 'block';
-    finalScoreEl.textContent = `${score} / ${maxQuestions}`;
-  }
+      // اختيار سؤال عشوائي غير مكرر
+      function getNextQuestion() {
+        if (askedQuestions.size >= questionsPool.length) {
+          return null;
+        }
+        let idx;
+        do {
+          idx = Math.floor(Math.random() * questionsPool.length);
+        } while (askedQuestions.has(idx));
+        askedQuestions.add(idx);
+        return questionsPool[idx];
+      }
 
-  function startQuiz() {
-    score = 0;
-    questionCount = 0;
-    usedQuestions.clear();
-    scoreEl.textContent = score;
-    quizContainer.style.display = 'flex';
-    resultScreen.style.display = 'none';
-    loadQuestion();
-  }
+      // عرض سؤال مع خياراته
+      function showQuestion(q) {
+        currentQuestion = q;
+        questionEl.textContent = q.question;
+        optionsEl.innerHTML = '';
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.textContent = opt;
+          btn.setAttribute('data-index', i);
+          btn.setAttribute('aria-label', `اختيار ${opt}`);
+          btn.addEventListener('click', () => selectOption(i));
+          optionsEl.appendChild(btn);
+        });
+      }
 
-  // بدء اللعبة أول مرة
-  startQuiz();
-</script>
+      // تعطيل الخيارات لمنع الضغط بعد الاختيار
+      function disableOptions() {
+        const buttons = optionsEl.querySelectorAll('button.option-btn');
+        buttons.forEach(btn => {
+          btn.classList.add('disabled');
+          btn.disabled = true;
+        });
+      }
 
+      // تمكين الخيارات مجددًا
+      function enableOptions() {
+        const buttons = optionsEl.querySelectorAll('button.option-btn');
+        buttons.forEach(btn => {
+          btn.classList.remove('disabled', 'correct', 'wrong');
+          btn.disabled = false;
+        });
+      }
+
+      // بدء عداد الوقت
+      function startTimer() {
+        timeLeft = 15;
+        timerEl.textContent = `الوقت المتبقي: ${timeLeft} ثانية`;
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          timerEl.textContent = `الوقت المتبقي: ${timeLeft} ثانية`;
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            revealAnswer(null);
+          }
+        }, 1000);
+      }
+
+      // إظهار الإجابة الصحيحة وخطأ المستخدم
+      function revealAnswer(selectedIndex) {
+        clearInterval(timerInterval);
+        disableOptions();
+
+        const buttons = optionsEl.querySelectorAll('button.option-btn');
+        buttons.forEach((btn, i) => {
+          if (i === currentQuestion.answer) {
+            btn.classList.add('correct');
+            btn.setAttribute('aria-label', btn.textContent + '، الإجابة الصحيحة');
+          } else if (i === selectedIndex) {
+            btn.classList.add('wrong');
+            btn.setAttribute('aria-label', btn.textContent + '، إجابة خاطئة');
+          }
+        });
+
+        // تحديث النقاط إذا الإجابة صحيحة
+        if (selectedIndex === currentQuestion.answer) {
+          score++;
+          scoreEl.textContent = score;
+        }
+
+        // بعد ثانية ونصف اعرض سؤال جديد أو النتيجة
+        setTimeout(() => {
+          loadNextQuestion();
+        }, 1500);
+      }
+
+      // عند اختيار خيار
+      function selectOption(index) {
+        revealAnswer(index);
+      }
+
+      // عرض النتيجة النهائية مع تحفيز ذكي
+      function showResult() {
+        quizContainer.style.display = 'none';
+        resultScreen.style.display = 'block';
+
+        let message = '';
+        if (score <= 10) {
+          message = `حاول مرة أخرى! ذكائك في ازدياد. حققت ${score} نقطة من أصل ${questionsPool.length}. لا تيأس، النجم الحقيقي يصنع من التجارب!`;
+        } else if (score <= 25) {
+          message = `عمل رائع! أنت تمتلك معرفة جيدة. حصلت على ${score} نقطة من ${questionsPool.length}. استمر في التعلم والنمو!`;
+        } else if (score <= 45) {
+          message = `أداء مميز! نجم يتألق بسطوع. ${score} نقطة من ${questionsPool.length}. المستقبل أمامك للتألق أكثر!`;
+        } else {
+          message = `أنت نجم الذكاء بلا منازع! ${score} نقطة من ${questionsPool.length}. استمر في إلهام العالم بمعرفتك!`;
+        }
+
+        resultText.textContent = message;
+      }
+
+      // إعادة تشغيل الاختبار
+      restartBtn.addEventListener('click', () => {
+        score = 0;
+        scoreEl.textContent = score;
+        askedQuestions.clear();
+        enableOptions();
+        resultScreen.style.display = 'none';
+        quizContainer.style.display = 'block';
+        loadQuestionsAndStart();
+      });
+
+      // تحميل الأسئلة بناءً على الفئة المختارة ثم البدء
+      function loadQuestionsAndStart() {
+        showLoadingScreen();
+        setTimeout(() => {
+          const selectedCategory = categorySelect.value;
+          questionsPool = gatherQuestions(selectedCategory);
+          askedQuestions.clear();
+          score = 0;
+          scoreEl.textContent = score;
+          hideLoadingScreen();
+          loadNextQuestion();
+        }, 800);
+      }
+
+      // تحميل السؤال التالي أو عرض النتيجة إذا انتهت الأسئلة
+      function loadNextQuestion() {
+        enableOptions();
+        const nextQ = getNextQuestion();
+        if (!nextQ) {
+          showResult();
+          return;
+        }
+        showQuestion(nextQ);
+        startTimer();
+      }
+
+      // بدء الاختبار عند تغيير الفئة
+      categorySelect.addEventListener('change', () => {
+        score = 0;
+        scoreEl.textContent = score;
+        askedQuestions.clear();
+        loadQuestionsAndStart();
+      });
+
+      // بداية فور تحميل الصفحة
+      showLoadingScreen();
+      setTimeout(() => {
+        questionsPool = gatherQuestions('all');
+        askedQuestions.clear();
+        hideLoadingScreen();
+        loadNextQuestion();
+      }, 1000);
+    })();
+  </script>
 </body>
 </html>
