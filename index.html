@@ -1,114 +1,279 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🔥 Genius Quiz</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .quiz-container {
-      background: rgba(255,255,255,0.05);
-      padding: 30px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 600px;
-      text-align: center;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-    }
-    h1 {
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-    .option {
-      background: rgba(255,255,255,0.15);
-      margin: 10px 0;
-      padding: 15px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .option:hover {
-      background: rgba(255,255,255,0.3);
-    }
-    .correct {
-      background-color: #28a745 !important;
-    }
-    .wrong {
-      background-color: #dc3545 !important;
-    }
-    .loading {
-      font-size: 20px;
-      opacity: 0.8;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>⚡ Quiz Genius - النسخة المتطورة</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    display: flex; flex-direction: column; align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+  header {
+    padding: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    user-select: none;
+  }
+  #category-select {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  #quiz-container {
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #question {
+    font-size: 22px;
+    margin-bottom: 20px;
+    min-height: 100px;
+  }
+  .option {
+    background: rgba(255,255,255,0.2);
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  .option:hover {
+    background: rgba(255,255,255,0.4);
+  }
+  .correct {
+    background-color: #28a745 !important;
+  }
+  .wrong {
+    background-color: #dc3545 !important;
+  }
+  #score-timer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    user-select: none;
+  }
+  #result-screen {
+    text-align: center;
+    padding: 20px;
+  }
+  button#restart-btn {
+    margin-top: 20px;
+    background: #28a745;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 15px;
+    font-size: 18px;
+    cursor: pointer;
+    color: white;
+    transition: background 0.3s ease;
+  }
+  button#restart-btn:hover {
+    background: #1e7e34;
+  }
+  #timer-bar {
+    height: 6px;
+    background: #28a745;
+    border-radius: 10px;
+    transition: width 1s linear;
+    margin-top: 5px;
+  }
+</style>
 </head>
 <body>
-  <div class="quiz-container" id="quiz">
-    <div class="loading">جاري تحميل السؤال...</div>
+
+<header>⚡ Quiz Genius</header>
+
+<select id="category-select" aria-label="اختر فئة الأسئلة">
+  <option value="">كل الفئات</option>
+  <option value="9">معرفة عامة</option>
+  <option value="17">علوم وطبيعة</option>
+  <option value="23">تاريخ</option>
+  <option value="22">جغرافيا</option>
+  <option value="18">كمبيوتر</option>
+  <option value="21">رياضة</option>
+</select>
+
+<div id="quiz-container">
+  <div id="question">جارٍ تحميل السؤال...</div>
+  <div id="options"></div>
+  <div id="score-timer">
+    <div>النقاط: <span id="score">0</span></div>
+    <div>الوقت المتبقي: <span id="timer">15</span> ثواني</div>
   </div>
+  <div id="timer-bar"></div>
+</div>
 
-  <script>
-    const quiz = document.getElementById('quiz');
-    let usedQuestions = new Set();
+<div id="result-screen" style="display:none;">
+  <h2>انتهى الاختبار!</h2>
+  <p>لقد حصلت على <span id="final-score"></span> من 10 نقاط.</p>
+  <button id="restart-btn">أعد المحاولة</button>
+</div>
 
-    function decode(str) {
-      const txt = document.createElement('textarea');
-      txt.innerHTML = str;
-      return txt.value;
+<script>
+  const questionEl = document.getElementById('question');
+  const optionsEl = document.getElementById('options');
+  const scoreEl = document.getElementById('score');
+  const timerEl = document.getElementById('timer');
+  const timerBar = document.getElementById('timer-bar');
+  const resultScreen = document.getElementById('result-screen');
+  const quizContainer = document.getElementById('quiz-container');
+  const finalScoreEl = document.getElementById('final-score');
+  const restartBtn = document.getElementById('restart-btn');
+  const categorySelect = document.getElementById('category-select');
+
+  let score = 0;
+  let questionCount = 0;
+  let maxQuestions = 10;
+  let currentCorrectAnswer = '';
+  let timer;
+  let timeLeft = 15;
+  let usedQuestions = new Set();
+
+  categorySelect.addEventListener('change', startQuiz);
+  restartBtn.addEventListener('click', startQuiz);
+
+  function decode(str) {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = str;
+    return txt.value;
+  }
+
+  function shuffle(array) {
+    for(let i = array.length -1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  async function fetchQuestion(category='') {
+    let url = 'https://opentdb.com/api.php?amount=1&type=multiple';
+    if(category) url += `&category=${category}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.results[0];
+  }
+
+  async function loadQuestion() {
+    if(questionCount >= maxQuestions) {
+      endQuiz();
+      return;
     }
 
-    async function loadQuestion() {
-      quiz.innerHTML = '<div class="loading">جاري تحميل السؤال...</div>';
-      const res = await fetch('https://opentdb.com/api.php?amount=1&type=multiple');
-      const data = await res.json();
-      const q = data.results[0];
+    questionEl.textContent = 'جارٍ تحميل السؤال...';
+    optionsEl.innerHTML = '';
+    resetTimer();
 
-      const question = decode(q.question);
-      const correct = decode(q.correct_answer);
-      let options = q.incorrect_answers.map(decode);
-      options.push(correct);
-      options = shuffle(options);
+    let q;
+    do {
+      q = await fetchQuestion(categorySelect.value);
+    } while(usedQuestions.has(q.question));
+    usedQuestions.add(q.question);
 
-      if (usedQuestions.has(question)) {
-        return loadQuestion(); // لو اتكرر يعيد
+    const question = decode(q.question);
+    const correct = decode(q.correct_answer);
+    currentCorrectAnswer = correct;
+    let options = q.incorrect_answers.map(decode);
+    options.push(correct);
+    options = shuffle(options);
+
+    questionEl.textContent = question;
+    optionsEl.innerHTML = options.map(opt => `<div class="option">${opt}</div>`).join('');
+    Array.from(optionsEl.children).forEach(option => {
+      option.addEventListener('click', () => checkAnswer(option));
+    });
+
+    questionCount++;
+    startTimer();
+  }
+
+  function checkAnswer(selectedOption) {
+    clearInterval(timer);
+    const options = Array.from(optionsEl.children);
+    options.forEach(opt => {
+      opt.style.pointerEvents = 'none';
+      if(opt.textContent === currentCorrectAnswer) opt.classList.add('correct');
+      else opt.classList.add('wrong');
+    });
+
+    if(selectedOption.textContent === currentCorrectAnswer) {
+      score++;
+      scoreEl.textContent = score;
+    }
+
+    setTimeout(loadQuestion, 1500);
+  }
+
+  function startTimer() {
+    timeLeft = 15;
+    timerEl.textContent = timeLeft;
+    timerBar.style.width = '100%';
+    timer = setInterval(() => {
+      timeLeft--;
+      timerEl.textContent = timeLeft;
+      timerBar.style.width = `${(timeLeft/15)*100}%`;
+      if(timeLeft <= 0) {
+        clearInterval(timer);
+        revealAnswer();
+        setTimeout(loadQuestion, 1500);
       }
-      usedQuestions.add(question);
+    }, 1000);
+  }
 
-      quiz.innerHTML = `
-        <h1>${question}</h1>
-        ${options.map(opt => `<div class="option" onclick="checkAnswer(this, '${correct.replace(/'/g, "\\'")}')">${opt}</div>`).join('')}
-      `;
-    }
+  function resetTimer() {
+    clearInterval(timer);
+    timerEl.textContent = '15';
+    timerBar.style.width = '100%';
+  }
 
-    function checkAnswer(element, correct) {
-      const options = document.querySelectorAll('.option');
-      options.forEach(opt => {
-        opt.style.pointerEvents = "none";
-        if (opt.innerText === correct) opt.classList.add('correct');
-        else opt.classList.add('wrong');
-      });
+  function revealAnswer() {
+    const options = Array.from(optionsEl.children);
+    options.forEach(opt => {
+      opt.style.pointerEvents = 'none';
+      if(opt.textContent === currentCorrectAnswer) opt.classList.add('correct');
+      else opt.classList.add('wrong');
+    });
+  }
 
-      setTimeout(loadQuestion, 1500);
-    }
+  function endQuiz() {
+    quizContainer.style.display = 'none';
+    resultScreen.style.display = 'block';
+    finalScoreEl.textContent = `${score} / ${maxQuestions}`;
+  }
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
+  function startQuiz() {
+    score = 0;
+    questionCount = 0;
+    usedQuestions.clear();
+    scoreEl.textContent = score;
+    quizContainer.style.display = 'flex';
+    resultScreen.style.display = 'none';
     loadQuestion();
-  </script>
+  }
+
+  // بدء اللعبة أول مرة
+  startQuiz();
+</script>
+
 </body>
 </html>
