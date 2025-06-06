@@ -1,201 +1,189 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>لعبة تحدي الذكاء الخرافية</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    font-family: 'Cairo', sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: #222;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-
-  #container {
-    background: #fff;
-    max-width: 700px;
-    width: 100%;
-    border-radius: 20px;
-    box-shadow: 0 25px 45px rgba(0,0,0,0.15);
-    padding: 30px 40px 40px;
-    text-align: center;
-  }
-
-  #question {
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: #333;
-    max-width: 90vw;
-    margin: 0 auto 35px;
-    padding: 20px 30px;
-    background: #f4f6fc;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    word-wrap: break-word;
-    white-space: normal;
-    line-height: 1.6;
-    text-align: center;
-    transition: opacity 0.3s ease;
-  }
-
-  .options {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
-    gap: 15px;
-    margin-bottom: 35px;
-  }
-
-  .option-btn {
-    padding: 15px 18px;
-    background: #e1e5f2;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #444;
-    cursor: pointer;
-    box-shadow: 0 8px 15px rgba(102,126,234,0.3);
-    transition: background-color 0.25s ease, color 0.25s ease, transform 0.15s ease;
-    user-select: none;
-  }
-
-  .option-btn:hover:not(.disabled) {
-    background-color: #667eea;
-    color: white;
-    transform: scale(1.07);
-  }
-
-  .option-btn.correct {
-    background-color: #48c774;
-    color: white;
-    cursor: default;
-    box-shadow: 0 8px 15px rgba(72,199,116,0.5);
-  }
-
-  .option-btn.wrong {
-    background-color: #f14668;
-    color: white;
-    cursor: default;
-    box-shadow: 0 8px 15px rgba(241,70,104,0.5);
-  }
-
-  .option-btn.disabled {
-    pointer-events: none;
-    opacity: 0.6;
-  }
-
-  #next-btn {
-    background: #667eea;
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    font-weight: 700;
-    padding: 14px 28px;
-    border-radius: 25px;
-    cursor: pointer;
-    box-shadow: 0 8px 25px rgba(102,126,234,0.6);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    user-select: none;
-    display: none;
-    margin: 0 auto;
-  }
-
-  #next-btn:hover {
-    background-color: #5762d5;
-    transform: scale(1.05);
-  }
-
-  #progress {
-    font-weight: 600;
-    color: #555;
-    margin-bottom: 15px;
-  }
-
-  #result {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #333;
-    margin-top: 25px;
-    background: #dff0d8;
-    padding: 20px 30px;
-    border-radius: 20px;
-    box-shadow: 0 8px 15px rgba(72,199,116,0.3);
-    display: none;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تحدي الذكاء الفاخر</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      color: #ffd700;
+    }
+    #question {
+      font-size: 1.4em;
+      margin-bottom: 20px;
+    }
+    .option-btn {
+      background: #1abc9c;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .option-btn:hover {
+      background: #16a085;
+    }
+    .correct {
+      background-color: #2ecc71 !important;
+    }
+    .wrong {
+      background-color: #e74c3c !important;
+    }
+    .disabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    #next-btn {
+      margin-top: 20px;
+      padding: 10px 25px;
+      font-size: 1.1em;
+      background-color: #2980b9;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+    #result {
+      font-size: 1.4em;
+      margin-top: 20px;
+      display: none;
+      color: #f1c40f;
+    }
+    #progress {
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #ccc;
+    }
+  </style>
 </head>
 <body>
-  <div id="container">
-    <div id="progress">السؤال 1 من 65</div>
-    <div id="question">جارٍ تحميل السؤال...</div>
-    <div class="options" id="options"></div>
+  <div class="container">
+    <h1>🔥 تحدي الذكاء العام 🔥</h1>
+    <div id="progress"></div>
+    <div id="question">...جارٍ تحميل السؤال</div>
+    <div id="options"></div>
     <button id="next-btn">السؤال التالي</button>
     <div id="result"></div>
   </div>
 
 <script>
-  const questions = [
-    {q: "ما هي عاصمة أستراليا؟", options: ["سيدني", "ملبورن", "كانبيرا", "بريسبان"], a: "كانبيرا"},
-    {q: "أي كوكب يعرف بالكوكب الأحمر؟", options: ["الأرض", "المريخ", "الزهرة", "المشتري"], a: "المريخ"},
-    {q: "من هو مؤلف رواية 'مئة عام من العزلة'؟", options: ["غابرييل غارسيا ماركيز", "نجيب محفوظ", "إرنست همنغواي", "تولستوي"], a: "غابرييل غارسيا ماركيز"},
-    {q: "ما هو العنصر الكيميائي الذي يرمز له بالرمز 'O'؟", options: ["ذهب", "أكسجين", "هيدروجين", "نيتروجين"], a: "أكسجين"},
-    {q: "في أي عام هبط أول إنسان على سطح القمر؟", options: ["1965", "1969", "1972", "1980"], a: "1969"},
-    {q: "ما هو أكبر محيط في العالم؟", options: ["الأطلسي", "الهندي", "الهادئ", "الشمالي"], a: "الهادئ"},
-    {q: "من هو مؤسس شركة مايكروسوفت؟", options: ["بيل غيتس", "ستيف جوبز", "مارك زوكربيرغ", "إيلون ماسك"], a: "بيل غيتس"},
-    {q: "أي دولة مشهورة بالساعة الشهيرة بيغ بن؟", options: ["فرنسا", "إنجلترا", "ألمانيا", "إيطاليا"], a: "إنجلترا"},
-    {q: "ما هو الحيوان الذي يُعرف بـ 'ملك الغابة'؟", options: ["الفهد", "الأسد", "النمر", "الدب"], a: "الأسد"},
-    {q: "ما هو أطول نهر في العالم؟", options: ["الأمازون", "النيل", "الغانج", "الميزيسيبي"], a: "النيل"},
-    {q: "أي من هذه الألوان هو اللون المكمل للأزرق؟", options: ["الأحمر", "الأخضر", "الأصفر", "البرتقالي"], a: "الأصفر"},
-    {q: "ما هو الجهاز المسؤول عن ضخ الدم في الجسم؟", options: ["الرئة", "القلب", "الكبد", "المعدة"], a: "القلب"},
-    {q: "من هو مؤسس نظرية النسبية؟", options: ["نيوتن", "ألبرت أينشتاين", "غاليلو", "ماكسويل"], a: "ألبرت أينشتاين"},
-    {q: "أي من هذه الدول ليست في قارة أوروبا؟", options: ["النمسا", "سويسرا", "البرازيل", "بولندا"], a: "البرازيل"},
-    {q: "ما هو أسرع حيوان بري؟", options: ["الفهد", "النعامة", "الظبي", "الذئب"], a: "الفهد"},
-    {q: "ما هو اسم أكبر صحراء في العالم؟", options: ["الصحراء الكبرى", "الصحراء العربية", "صحراء جوبي", "صحراء أتاكاما"], a: "الصحراء الكبرى"},
-    {q: "ما هي لغة البرمجة التي تستخدم لتصميم صفحات الويب؟", options: ["Python", "HTML", "C++", "Java"], a: "HTML"},
-    {q: "ما هو اسم الكوكب الذي يسمى بالكوكب العملاق؟", options: ["المشتري", "زحل", "نبتون", "أورانوس"], a: "المشتري"},
-    {q: "من هو مكتشف الكهرباء؟", options: ["نيكولا تسلا", "توماس إديسون", "ألكسندر غراهام بيل", "بن فرانكلين"], a: "بن فرانكلين"},
-    {q: "ما هو أسرع وسيلة نقل؟", options: ["السيارة", "القطار", "الطائرة", "الدراجة"], a: "الطائرة"},
-    {q: "أي من هذه الحيوانات بحجم صغير جدا؟", options: ["الفيل", "الفأر", "التمساح", "الزرافة"], a: "الفأر"},
-    {q: "ما هو اسم أكبر قارة في العالم؟", options: ["آسيا", "أفريقيا", "أوروبا", "أمريكا"], a: "آسيا"},
-    {q: "ما هو الجهاز الذي نستخدمه للنظر إلى النجوم؟", options: ["الميكروسكوب", "التلسكوب", "الكاميرا", "الراديو"], a: "التلسكوب"},
-    {q: "من هو أول رئيس للولايات المتحدة الأمريكية؟", options: ["توماس جيفرسون", "جورج واشنطن", "أبراهام لنكولن", "بنجامين فرانكلين"], a: "جورج واشنطن"},
-    {q: "أي من هذه الكواكب أصغر حجمًا؟", options: ["زحل", "المشتري", "بلوتو", "المريخ"], a: "بلوتو"},
-    {q: "ما هو اسم أسرع طائر في العالم؟", options: ["الصقر", "النسور", "الهدهد", "الحمام"], a: "الصقر"},
-    {q: "ما هي وحدة قياس التيار الكهربائي؟", options: ["فولت", "أمبير", "أوم", "واط"], a: "أمبير"},
-    {q: "أي من هذه الدول تقع في قارة أفريقيا؟", options: ["مصر", "البرازيل", "روسيا", "اليابان"], a: "مصر"},
-    {q: "ما هو اسم أكبر بحيرة عذبة في العالم؟", options: ["بحيرة فيكتوريا", "بحيرة سوبيريور", "بحيرة ميشيغان", "بحيرة تانجانيقا"], a: "بحيرة سوبيريور"},
-    {q: "ما هو اسم أطول جبل في العالم؟", options: ["جبل إيفرست", "جبل كليمنجارو", "جبل آكونكاجوا", "جبل فوجي"], a: "جبل إيفرست"},
-    {q: "من هو مخترع المصباح الكهربائي؟", options: ["نيكولا تسلا", "توماس إديسون", "غراهام بيل", "ألكسندر جراهام"], a: "توماس إديسون"},
-    {q: "أي دولة مشهورة بشلالات نياجرا؟", options: ["كندا", "الولايات المتحدة", "البرازيل", "الأرجنتين"], a: "كندا"},
-    {q: "ما هو اسم أسرع حيوان في البحر؟", options: ["القرش", "الدلفين", "سمكة أبو سيف", "السلحفاة"], a: "سمكة أبو سيف"},
-    {q: "ما هي عاصمة اليابان؟", options: ["طوكيو", "أوساكا", "كيوتو", "هيروشيما"], a: "طوكيو"},
-    {q: "ما هو اسم أطول نهر في أوروبا؟", options: ["نهر الفولغا", "نهر الدانوب", "نهر الراين", "نهر السين"], a: "نهر الفولغا"},
-    {q: "ما هو اسم القارة التي تحتوي على أكبر عدد من الدول؟", options: ["آسيا", "أفريقيا", "أوروبا", "أمريكا الجنوبية"], a: "أفريقيا"},
-    {q: "أي من هذه الحيوانات بحجم صغير جدا؟", options: ["الفأر", "الفيل", "التمساح", "الزرافة"], a: "الفأر"},
-    {q: "ما هي عاصمة فرنسا؟", options: ["باريس", "ليون", "مرسيليا", "نيس"], a: "باريس"},
-    {q: "أي من هذه الأجهزة تستخدم لقياس الحرارة؟", options: ["ميزان الحرارة", "البارومتر", "المجهر", "الساعة"], a: "ميزان الحرارة"},
-    {q: "ما هو اسم أكبر محيط في العالم؟", options: ["المحيط الهادئ", "المحيط الأطلسي", "المحيط الهندي", "المحيط المتجمد"], a: "المحيط الهادئ"},
-    {q: "أي من هذه الكواكب هو الأقرب إلى الشمس؟", options: ["المريخ", "الزهرة", "عطارد", "الأرض"], a: "عطارد"},
-    {q: "ما هو اسم الغاز الذي نتنفسه؟", options: ["الهيدروجين", "الأكسجين", "النيتروجين", "الهيليوم"], a: "الأكسجين"},
-    {q: "من هو مؤسس شركة أبل؟", options: ["بيل غيتس", "ستيف جوبز", "مارك زوكربيرغ", "إيلون ماسك"], a: "ستيف جوبز"},
-    {q: "أي دولة تشتهر بالأهرامات؟", options: ["مصر", "اليونان", "إيطاليا", "تركيا"], a: "مصر"},
-    {q: "ما هو اسم أكبر محيط في العالم؟", options: ["المحيط الهادئ", "المحيط الأطلسي", "المحيط الهندي", "المحيط المتجمد"], a: "المحيط الهادئ"},
-    {q: "ما هو اسم أسرع حيوان بري؟", options: ["الفهد", "النعامة", "الظبي", "الذئب"], a: "الفهد"},
-    {q: "ما هي لغة البرمجة المستخدمة لإنشاء صفحات الويب؟", options: ["بايثون", "جافا", "HTML", "سي++"], a: "HTML"},
-    {q: "من هو مكتشف أمريكا؟", options: ["كريستوفر كولومبوس", "فينسنت فان جوخ", "ليوناردو دا فينشي", "نابليون بونابرت"], a: "كريستوفر كولومبوس"},
-    {q: "ما هي عاصمة ألمانيا؟", options: ["برلين", "ميونخ", "فرانكفورت", "هامبورغ"], a: "برلين"},
-    {q: "أي من هذه الحيوانات هو أكبر حيوان بري؟", options: ["الفيل", "الزرافة", "الحصان", "الأسد"], a: "الفيل"},
-    {q: "ما هو اسم أكبر نهر في أمريكا الجنوبية؟", options: ["الأمازون", "البارانا
+const originalQuestions = [
+  { q: "ما هي عاصمة أستراليا؟", options: ["كانبرا", "سيدني", "ملبورن", "بيرث"], a: "كانبرا" },
+  { q: "من هو مكتشف الجاذبية؟", options: ["نيوتن", "أينشتاين", "غاليلو", "كوبرنيكوس"], a: "نيوتن" },
+  { q: "كم عدد كواكب المجموعة الشمسية؟", options: ["7", "8", "9", "10"], a: "8" },
+  { q: "أكبر محيط في العالم؟", options: ["الأطلسي", "الهادئ", "الهندي", "المتجمد"], a: "الهادئ" },
+  { q: "كم عدد أضلاع المثلث؟", options: ["2", "3", "4", "5"], a: "3" },
+  { q: "من مؤلف رواية البؤساء؟", options: ["فيكتور هوجو", "دوستويفسكي", "تولستوي", "شكسبير"], a: "فيكتور هوجو" },
+  { q: "ما هو العنصر الكيميائي H؟", options: ["هيدروجين", "هيليوم", "هالوجين", "حديد"], a: "هيدروجين" },
+  { q: "كم ثانية في الدقيقة؟", options: ["60", "100", "30", "120"], a: "60" },
+  { q: "ما هو الحيوان الذي لا يصدر صوتًا؟", options: ["الزرافة", "الثعبان", "السلحفاة", "الحوت"], a: "الزرافة" },
+  { q: "في أي قارة تقع مصر؟", options: ["آسيا", "أوروبا", "أفريقيا", "أمريكا"], a: "أفريقيا" }
+];
 
+function generateQuestions(count) {
+  const generated = [];
+  while (generated.length < count) {
+    const copy = JSON.parse(JSON.stringify(originalQuestions));
+    shuffle(copy);
+    for (const q of copy) {
+      if (generated.length >= count) break;
+      generated.push(q);
+    }
+  }
+  return generated;
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+const questions = generateQuestions(65);
+let currentQuestion = 0;
+let score = 0;
+
+const questionElem = document.getElementById("question");
+const optionsElem = document.getElementById("options");
+const nextBtn = document.getElementById("next-btn");
+const progress = document.getElementById("progress");
+const result = document.getElementById("result");
+
+function showQuestion() {
+  if (currentQuestion >= questions.length) return showResult();
+  const q = questions[currentQuestion];
+  progress.textContent = `السؤال ${currentQuestion + 1} من ${questions.length}`;
+  questionElem.textContent = q.q;
+  optionsElem.innerHTML = "";
+  shuffle(q.options);
+  q.options.forEach(option => {
+    const btn = document.createElement("button");
+    btn.classList.add("option-btn");
+    btn.textContent = option;
+    btn.onclick = () => selectAnswer(btn, q.a);
+    optionsElem.appendChild(btn);
+  });
+}
+
+function selectAnswer(selectedBtn, correctAnswer) {
+  const buttons = document.querySelectorAll(".option-btn");
+  buttons.forEach(btn => {
+    btn.classList.add("disabled");
+    if (btn.textContent === correctAnswer) btn.classList.add("correct");
+  });
+  if (selectedBtn.textContent !== correctAnswer) selectedBtn.classList.add("wrong");
+  score += selectedBtn.textContent === correctAnswer ? 1 : 0;
+  nextBtn.style.display = "inline-block";
+}
+
+nextBtn.addEventListener("click", () => {
+  currentQuestion++;
+  nextBtn.style.display = "none";
+  showQuestion();
+});
+
+function showResult() {
+  questionElem.style.display = "none";
+  optionsElem.style.display = "none";
+  nextBtn.style.display = "none";
+  progress.style.display = "none";
+  result.style.display = "block";
+  result.innerHTML = `🔥 حصلت على <strong>${score}</strong> من <strong>${questions.length}</strong> سؤال!`;
+}
+
+showQuestion();
+</script>
+</body>
+</html>
