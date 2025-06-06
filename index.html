@@ -3,207 +3,128 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>تحدي الذكاء الفائق</title>
+  <title>🎯 تحدي ذكاء لا نهائي - عربي</title>
   <style>
-    body {
-      background: linear-gradient(to bottom, #1e3a8a, #2563eb);
-      color: #fff;
-      font-family: 'Cairo', sans-serif;
-      padding: 40px;
-      direction: rtl;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #ffffff10;
-      backdrop-filter: blur(8px);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-    }
-
-    h1 {
-      font-size: 32px;
-      margin-bottom: 30px;
-    }
-
-    .question {
-      font-size: 22px;
-      margin-bottom: 20px;
-    }
-
-    .options {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .options button {
-      padding: 12px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.1s;
-      background-color: #3b82f6;
-      color: white;
-    }
-
-    .options button:hover {
-      transform: scale(1.02);
-    }
-
-    .correct {
-      background-color: #16a34a !important;
-    }
-
-    .wrong {
-      background-color: #dc2626 !important;
-    }
-
-    #timer, #counter, #score {
-      font-size: 18px;
-      margin-top: 10px;
-    }
-
-    #endBtn {
-      margin-top: 20px;
-      background-color: #f43f5e;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      color: white;
-    }
-
-    #finalResult {
-      margin-top: 30px;
-      background-color: #fff;
-      color: #111827;
-      border-radius: 12px;
-      padding: 20px;
-      font-size: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
+    body { background: #222f3e; color: #f5f6fa; font-family: 'Cairo', sans-serif; padding: 30px; direction: rtl; text-align: center; }
+    .container { max-width: 700px; margin:auto; background:#3c40c6; border-radius:15px; padding:20px; box-shadow:0 0 20px rgba(0,0,0,0.5); }
+    h1 { margin-bottom:20px; font-size:2rem; }
+    .question { font-size:1.4rem; margin:20px 0; min-height:60px; }
+    .options { display:grid; gap:12px; }
+    .options button { padding:12px; font-size:1rem; border:none;border-radius:8px; cursor:pointer; transition:transform .1s; background:#57606f; color:#f1f2f6; }
+    .options button:hover { transform:scale(1.02); }
+    .correct { background:#2ed573 !important; }
+    .wrong { background:#ff4757 !important; }
+    #status { display:flex; justify-content:space-around; margin-top:15px; }
+    #status span { font-size:1rem; }
+    #endBtn { margin-top:20px; padding:10px 18px; background:#ffa502; color:#2f3542; border:none; border-radius:8px; cursor:pointer; font-size:1rem; }
+    #finalResult { margin-top:30px; background:#f1f2f6; color:#2f3542; border-radius:12px; padding:20px; font-size:1.1rem; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🔥 تحدي الذكاء الفائق</h1>
+    <h1>🎯 تحدي ذكاء لا نهائي (عربي)</h1>
     <div id="quiz">
-      <div class="question" id="question"></div>
+      <div class="question" id="question">جاري تحميل السؤال...</div>
       <div class="options" id="options"></div>
-      <div id="timer">⏱️ الوقت المتبقي: <span id="time">15</span> ثانية</div>
-      <div id="counter">📊 عدد الأسئلة: <span id="count">0</span></div>
-      <div id="score">✅ نتيجتك: 0</div>
+      <div id="status">
+        <span>⏱️ الوقت: <span id="time">--</span></span>
+        <span>🎯 عدد الأسئلة: <span id="count">0</span></span>
+        <span>✅ صحيح: <span id="score">0</span></span>
+      </div>
       <button id="endBtn" onclick="endGame()">إنهاء اللعبة</button>
     </div>
     <div id="finalResult"></div>
   </div>
 
   <script>
-    const questions = [
-      { question: "ما هو ناتج 7 × 8؟", options: ["54", "56", "64", "58"], correct: 1 },
-      { question: "أكبر كوكب في النظام الشمسي؟", options: ["المريخ", "المشتري", "نبتون", "زحل"], correct: 1 },
-      { question: "عدد أرجل العنكبوت؟", options: ["4", "6", "8", "10"], correct: 2 },
-      { question: "عاصمة اليابان؟", options: ["أوساكا", "طوكيو", "كيوتو", "هيروشيما"], correct: 1 },
-      { question: "أي العناصر التالية غاز نبيل؟", options: ["أكسجين", "نيون", "كربون", "حديد"], correct: 1 },
-      { question: "ما هو العنصر الذي رمزه Fe؟", options: ["فضة", "حديد", "ذهب", "نحاس"], correct: 1 },
-      { question: "أي الحيوانات التالية لا يبيض؟", options: ["سلحفاة", "نسر", "قطة", "سمكة"], correct: 2 },
-      { question: "ما هو 2^4؟", options: ["8", "12", "16", "24"], correct: 2 },
-    ];
-
-    let score = 0;
-    let count = 0;
-    let time = 15;
-    let timer;
-    let currentQuestion = {};
-
-    function getRandomQuestion() {
-      return questions[Math.floor(Math.random() * questions.length)];
+    let score=0, count=0, time=15, timer;
+    let current;
+    async function fetchQuestion() {
+      document.getElementById('question').innerText = '...جاري التحميل';
+      document.getElementById('options').innerHTML = '';
+      try {
+        const res = await fetch('https://opentdb.com/api.php?amount=1&type=multiple');
+        const data = await res.json();
+        const q = data.results[0];
+        const text = decodeHTMLEntities(q.question);
+        const correct = decodeHTMLEntities(q.correct_answer);
+        const incorrect = q.incorrect_answers.map(a=>decodeHTMLEntities(a));
+        const opts = [correct, ...incorrect].sort(() => Math.random() - .5);
+        current = { question: text, options: opts, correct };
+        renderQuestion();
+      } catch (e) {
+        console.error(e);
+        document.getElementById('question').innerText = 'حدث خطأ، أعد المحاولة';
+      }
     }
-
-    function showQuestion() {
-      currentQuestion = getRandomQuestion();
-      document.getElementById("question").innerText = currentQuestion.question;
-      const optionsDiv = document.getElementById("options");
-      optionsDiv.innerHTML = "";
-
-      currentQuestion.options.forEach((opt, index) => {
-        const btn = document.createElement("button");
+    function decodeHTMLEntities(text) {
+      const txt = document.createElement('textarea');
+      txt.innerHTML = text;
+      return txt.value;
+    }
+    function renderQuestion() {
+      document.getElementById('question').innerText = current.question;
+      const optDiv = document.getElementById('options');
+      current.options.forEach(opt => {
+        const btn = document.createElement('button');
         btn.innerText = opt;
-        btn.onclick = () => handleAnswer(btn, index);
-        optionsDiv.appendChild(btn);
+        btn.onclick = () => handle(opt, btn);
+        optDiv.appendChild(btn);
       });
-
       resetTimer();
     }
-
-    function handleAnswer(button, selectedIndex) {
+    function handle(opt, btn) {
       clearInterval(timer);
-      const options = document.querySelectorAll("#options button");
-      options.forEach((btn, idx) => {
-        btn.disabled = true;
-        if (idx === currentQuestion.correct) btn.classList.add("correct");
-        else if (idx === selectedIndex) btn.classList.add("wrong");
+      const all = [...document.querySelectorAll('#options button')];
+      all.forEach(b=>{
+        b.disabled = true;
+        if (b.innerText === current.correct) b.classList.add('correct');
+        if (b === btn && opt !== current.correct) b.classList.add('wrong');
       });
-
-      if (selectedIndex === currentQuestion.correct) score++;
+      if (opt === current.correct) score++;
       count++;
       updateStatus();
-
-      setTimeout(() => {
-        showQuestion();
-      }, 1500);
+      setTimeout(fetchQuestion, 1500);
     }
-
     function resetTimer() {
       clearInterval(timer);
       time = 15;
-      document.getElementById("time").innerText = time;
+      document.getElementById('time').innerText = time;
       timer = setInterval(() => {
         time--;
-        document.getElementById("time").innerText = time;
+        document.getElementById('time').innerText = time;
         if (time === 0) {
           clearInterval(timer);
           count++;
           updateStatus();
-          showCorrectOnly();
-          setTimeout(() => {
-            showQuestion();
-          }, 1500);
+          revealCorrect();
+          setTimeout(fetchQuestion, 1500);
         }
       }, 1000);
     }
-
-    function showCorrectOnly() {
-      const options = document.querySelectorAll("#options button");
-      options.forEach((btn, idx) => {
-        btn.disabled = true;
-        if (idx === currentQuestion.correct) btn.classList.add("correct");
+    function revealCorrect() {
+      document.querySelectorAll('#options button').forEach(b => {
+        if (b.innerText === current.correct) b.classList.add('correct');
+        b.disabled = true;
       });
     }
-
     function updateStatus() {
-      document.getElementById("score").innerText = `✅ نتيجتك: ${score}`;
-      document.getElementById("count").innerText = count;
+      document.getElementById('score').innerText = score;
+      document.getElementById('count').innerText = count;
     }
-
     function endGame() {
       clearInterval(timer);
-      document.getElementById("quiz").style.display = "none";
-      document.getElementById("finalResult").innerHTML = `
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('finalResult').innerHTML = `
         <h2>📊 النتيجة النهائية</h2>
         <p>عدد الأسئلة: ${count}</p>
         <p>إجابات صحيحة: ${score}</p>
         <p>إجابات خاطئة: ${count - score}</p>
-        <p>نسبة النجاح: <strong>${Math.round((score / count) * 100) || 0}%</strong></p>
+        <p>نسبة النجاح: <strong>${ count? Math.round(score/count*100):0 }%</strong></p>
+        <button onclick="location.reload()">🔄 أعد اللعب</button>
       `;
     }
-
-    showQuestion();
+    fetchQuestion();
   </script>
 </body>
 </html>
