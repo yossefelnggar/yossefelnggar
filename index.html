@@ -1,368 +1,266 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>نظام توليد أسئلة ذكي - بدون باك اند</title>
+<title>تحدي الأسئلة الذكي - تجربة لا مثيل لها</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cairo&display=swap');
+  /* Reset */
+  * {
+    box-sizing: border-box;
+  }
   body {
-    margin: 0; padding: 0; font-family: 'Cairo', sans-serif;
-    background: linear-gradient(135deg, #1f2937, #4f46e5);
-    color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+    margin: 0; padding: 0;
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #3b82f6);
+    color: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
   }
   header {
-    margin: 20px 0;
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-shadow: 0 0 10px #6366f1;
+    margin: 30px 0 15px 0;
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    color: #e0e7ff;
+    text-shadow: 0 0 12px #2563ebaa;
+    user-select: none;
   }
   main {
-    background: rgba(255 255 255 / 0.1);
-    padding: 25px 40px;
-    border-radius: 20px;
-    width: 90%;
-    max-width: 600px;
-    box-shadow: 0 0 20px #4f46e5aa;
+    background: rgba(255 255 255 / 0.05);
+    padding: 30px 40px;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: 0 8px 30px #2563ebbb;
     user-select: none;
   }
   .question {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    min-height: 80px;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    min-height: 100px;
+    line-height: 1.3;
+    text-align: center;
+    text-shadow: 0 0 10px #93c5fdaa;
   }
   .answers {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 25px;
   }
   button.answer-btn {
-    background: #6366f1;
+    background: linear-gradient(145deg, #2563eb, #1e40af);
     border: none;
-    padding: 15px;
-    font-size: 1.2rem;
-    border-radius: 12px;
+    padding: 18px 22px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e0e7ff;
+    border-radius: 16px;
     cursor: pointer;
-    color: white;
-    box-shadow: 0 4px 15px #818cf8cc;
-    transition: background 0.3s ease;
+    box-shadow: 0 5px 15px #1e40afaa;
+    transition:
+      background 0.4s ease,
+      transform 0.25s ease,
+      box-shadow 0.4s ease;
+    user-select: none;
   }
-  button.answer-btn:hover {
-    background: #4f46e5;
+  button.answer-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #3b82f6, #2563eb);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px #3b82f6cc;
+  }
+  button.answer-btn:disabled {
+    cursor: default;
+    opacity: 0.85;
   }
   button.correct {
     background: #22c55e !important;
-    box-shadow: 0 0 15px #22c55eaa;
+    box-shadow: 0 0 15px #22c55ecc !important;
+    color: #f0fdf4 !important;
   }
   button.wrong {
     background: #ef4444 !important;
-    box-shadow: 0 0 15px #ef4444aa;
+    box-shadow: 0 0 15px #ef4444cc !important;
+    color: #fef2f2 !important;
   }
   .scoreboard {
-    margin-top: 25px;
-    font-size: 1.2rem;
-    background: rgba(255 255 255 / 0.15);
-    padding: 10px 20px;
-    border-radius: 12px;
+    margin-top: 30px;
+    font-size: 1.3rem;
+    background: rgba(229 231 235 / 0.12);
+    color: #e0e7ff;
+    padding: 14px 30px;
+    border-radius: 20px;
     text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     user-select: none;
+    box-shadow: inset 0 0 8px #2563ebaa;
   }
   footer {
     margin-top: auto;
-    padding: 15px;
+    padding: 18px 12px;
     font-size: 0.9rem;
-    color: #a5b4fc;
+    color: #93c5fdcc;
     user-select: none;
+  }
+  @media (max-width: 480px) {
+    main {
+      padding: 25px 20px;
+    }
+    .answers {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+    .question {
+      font-size: 1.6rem;
+      min-height: 80px;
+    }
+    button.answer-btn {
+      font-size: 1.1rem;
+      padding: 14px 18px;
+    }
   }
 </style>
 </head>
 <body>
-<header>تحدي الذكاء الذكي</header>
+<header>تحدي الأسئلة الذكي</header>
 <main>
   <div class="question" id="question">جارٍ تحميل السؤال...</div>
   <div class="answers" id="answers"></div>
   <div class="scoreboard" id="scoreboard">الدرجة: 0 | مستوى الصعوبة: 1</div>
 </main>
-<footer>يوسف - نموذج توليد أسئلة بدون باك اند</footer>
+<footer>تطوير عبقري بواسطة يوسف</footer>
 
 <script>
 (() => {
-  // حالة اللعبة
   let score = 0;
   let difficulty = 1;
   let askedQuestions = new Set();
 
-  // مولد أسئلة ديناميكي بحسب الصعوبة
-  function generateQuestion(difficulty) {
-    // أنواع الأسئلة: اختيار متعدد، صح أو خطأ، أكمل الفراغ، حسابي
-    const types = ['multipleChoice', 'trueFalse', 'fillBlank', 'math'];
-    const type = types[Math.floor(Math.random() * types.length)];
-
-    // مفردات وأسئلة بناءً على النوع والصعوبة
-    switch(type) {
-      case 'multipleChoice':
-        return generateMultipleChoice(difficulty);
-      case 'trueFalse':
-        return generateTrueFalse(difficulty);
-      case 'fillBlank':
-        return generateFillBlank(difficulty);
-      case 'math':
-        return generateMath(difficulty);
-    }
-  }
-
-  function generateMultipleChoice(diff) {
-    const easyQs = [
+  // بنك أسئلة متعدد مع 4 خيارات لكل سؤال
+  const questionsBank = {
+    1: [
       {q: "ما هي عاصمة مصر؟", a: "القاهرة", options: ["القاهرة", "الإسكندرية", "الرياض", "دمشق"]},
-      {q: "ما لون السماء؟", a: "أزرق", options: ["أحمر", "أزرق", "أصفر", "أخضر"]},
-      {q: "ما هو أكبر كوكب في المجموعة الشمسية؟", a: "المشتري", options: ["المريخ", "الأرض", "المشتري", "الزهرة"]}
-    ];
-    const medQs = [
+      {q: "ما هو لون السماء؟", a: "أزرق", options: ["أحمر", "أزرق", "أصفر", "أخضر"]},
+      {q: "ما أكبر كوكب في المجموعة الشمسية؟", a: "المشتري", options: ["المريخ", "الأرض", "المشتري", "الزهرة"]},
+      {q: "كم عدد أيام الأسبوع؟", a: "7", options: ["5", "6", "7", "8"]},
+    ],
+    2: [
       {q: "من هو مؤسس شركة مايكروسوفت؟", a: "بيل جيتس", options: ["بيل جيتس", "ستيف جوبز", "مارك زوكربيرغ", "إيلون ماسك"]},
       {q: "أي من هذه الحيوانات يعيش في الماء فقط؟", a: "الدلفين", options: ["التمساح", "الدلفين", "الضبع", "النسور"]},
       {q: "ما هو الغاز الذي نتنفسه؟", a: "الأكسجين", options: ["النيتروجين", "الهيدروجين", "الأكسجين", "الكربون"]},
-    ];
-    const hardQs = [
+      {q: "ما أكبر محيط في العالم؟", a: "المحيط الهادئ", options: ["المحيط الأطلسي", "المحيط الهادئ", "المحيط الهندي", "المحيط المتجمد"]},
+    ],
+    3: [
       {q: "ما هو العنصر الكيميائي الذي رمزه Fe؟", a: "الحديد", options: ["الذهب", "الحديد", "الفوسفور", "الزنك"]},
       {q: "في أي سنة وقعت الثورة الفرنسية؟", a: "1789", options: ["1776", "1789", "1812", "1804"]},
       {q: "من هو الفيلسوف الذي قال: 'أنا أفكر إذن أنا موجود'؟", a: "ديكارت", options: ["أفلاطون", "أرسطو", "ديكارت", "هيجل"]},
-    ];
-    let pool;
-    if(diff <= 2) pool = easyQs;
-    else if(diff <= 4) pool = medQs;
-    else pool = hardQs;
+      {q: "ما هو أسرع حيوان بري؟", a: "الفهد", options: ["الأسد", "الفهد", "الكنغر", "الغزال"]},
+    ],
+    4: [
+      {q: "ما هو قانون نيوتن الثالث؟", a: "لكل فعل رد فعل مساوي له في المقدار ومضاد له في الاتجاه", options: [
+        "لكل فعل رد فعل مساوي له في المقدار ومضاد له في الاتجاه",
+        "الطاقة لا تفنى ولا تستحدث من عدم",
+        "القوة تساوي الكتلة في التسارع",
+        "الجسم الساكن يبقى ساكنًا"
+      ]},
+      {q: "ما هو العدد الذري للهيليوم؟", a: "2", options: ["1", "2", "3", "4"]},
+      {q: "ما هو تعريف الذكاء الاصطناعي؟", a: "تمكين الآلات من محاكاة السلوك البشري", options: [
+        "تمكين الآلات من محاكاة السلوك البشري",
+        "شبكة الإنترنت العالمية",
+        "تطوير البرمجيات فقط",
+        "تحليل البيانات فقط"
+      ]},
+      {q: "من هو مؤلف رواية 'مئة عام من العزلة'؟", a: "غابرييل غارسيا ماركيز", options: [
+        "إرنست همنغواي", "غابرييل غارسيا ماركيز", "فيكتور هوغو", "تولستوي"
+      ]},
+    ],
+  };
 
-    // اختيار سؤال عشوائي بدون تكرار
-    let question;
-    do {
-      question = pool[Math.floor(Math.random() * pool.length)];
-    } while(askedQuestions.has(question.q) && askedQuestions.size < pool.length);
-
-    askedQuestions.add(question.q);
-    return {type: 'multipleChoice', ...question};
-  }
-
-  function generateTrueFalse(diff) {
-    const easyTF = [
-      {q: "الشمس هي نجم.", a: true},
-      {q: "القمر أكبر من الأرض.", a: false},
-      {q: "الماء يغلي عند 100 درجة مئوية.", a: true},
-    ];
-    const medTF = [
-      {q: "الكرة الأرضية مسطحة.", a: false},
-      {q: "الذرة تتكون من إلكترونات وبروتونات.", a: true},
-      {q: "الأكسجين هو الغاز الوحيد الذي نتنفسه.", a: false},
-    ];
-    const hardTF = [
-      {q: "النسبية العامة هي نظرية فيزيائية قدمها أينشتاين.", a: true},
-      {q: "الصخور النارية تتكون من صهارة باردة.", a: false},
-      {q: "فيزياء الكم لا تتعامل مع الجسيمات الصغيرة فقط.", a: true},
-    ];
-    let pool;
-    if(diff <= 2) pool = easyTF;
-    else if(diff <=4) pool = medTF;
-    else pool = hardTF;
-
-    let question;
-    do {
-      question = pool[Math.floor(Math.random() * pool.length)];
-    } while(askedQuestions.has(question.q) && askedQuestions.size < pool.length);
-
-    askedQuestions.add(question.q);
-    return {type:'trueFalse', question: question.q, answer: question.a};
-  }
-
-  function generateFillBlank(diff) {
-    const easyFB = [
-      {q: "العاصمة المصرية هي _____.", a: "القاهرة"},
-      {q: "اللون الناتج عن خلط الأحمر والأزرق هو _____.", a: "البنفسجي"},
-      {q: "الماء يغلي عند _____ درجة مئوية.", a: "100"},
-    ];
-    const medFB = [
-      {q: "أكبر محيط في العالم هو _____.", a: "المحيط الهادئ"},
-      {q: "شخصية قصة ألف ليلة وليلة الشهيرة هي _____.", a: "شهرزاد"},
-      {q: "أول رئيس لمصر بعد الثورة هو _____.", a: "جمال عبد الناصر"},
-    ];
-    const hardFB = [
-      {q: "قانون نيوتن الثالث يتعلق بـ _____ والحركة.", a: "القوة"},
-      {q: "في اللغة الإنجليزية، 'cat' تعني _____.", a: "قطة"},
-      {q: "عدد الكواكب في النظام الشمسي هو _____.", a: "ثمانية"},
-    ];
-    let pool;
-    if(diff <= 2) pool = easyFB;
-    else if(diff <=4) pool = medFB;
-    else pool = hardFB;
-
-    let question;
-    do {
-      question = pool[Math.floor(Math.random() * pool.length)];
-    } while(askedQuestions.has(question.q) && askedQuestions.size < pool.length);
-
-    askedQuestions.add(question.q);
-    return {type: 'fillBlank', question: question.q, answer: question.a};
-  }
-
-  function generateMath(diff) {
-    // كلما زادت الصعوبة تزيد الأرقام والعمليات
-    let a = Math.floor(Math.random() * (5 * diff) + 1);
-    let b = Math.floor(Math.random() * (5 * diff) + 1);
-    let ops = ['+', '-', '*'];
-    let op = ops[Math.floor(Math.random() * ops.length)];
-    let question, answer;
-
-    switch(op) {
-      case '+':
-        question = `${a} + ${b} = ?`;
-        answer = a + b;
-        break;
-      case '-':
-        question = `${a} - ${b} = ?`;
-        answer = a - b;
-        break;
-      case '*':
-        question = `${a} × ${b} = ?`;
-        answer = a * b;
-        break;
-    }
-
-    // تأكد من عدم التكرار بناءً على السؤال النصي
-    if(askedQuestions.has(question) && askedQuestions.size < 50) {
-      return generateMath(diff); // جرب مرة ثانية
-    }
-    askedQuestions.add(question);
-    return {type: 'math', question, answer: answer.toString()};
-  }
-
-  // عرض السؤال مع خيارات أو حقل إدخال
-  function displayQuestion(qObj) {
-    const questionEl = document.getElementById('question');
-    const answersEl = document.getElementById('answers');
-    answersEl.innerHTML = '';
-    questionEl.textContent = qObj.q || qObj.question;
-
-    if(qObj.type === 'multipleChoice') {
-      let shuffledOptions = qObj.options.slice().sort(() => Math.random() - 0.5);
-      shuffledOptions.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'answer-btn';
-        btn.textContent = opt;
-        btn.onclick = () => checkAnswer(qObj.a, opt);
-        answersEl.appendChild(btn);
-      });
-    } else if(qObj.type === 'trueFalse') {
-      ['صح', 'خطأ'].forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'answer-btn';
-        btn.textContent = opt;
-        btn.onclick = () => {
-          let userAns = (opt === 'صح');
-          checkAnswer(qObj.answer, userAns);
-        };
-        answersEl.appendChild(btn);
-      });
-    } else if(qObj.type === 'fillBlank') {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = 'اكتب الإجابة هنا';
-      input.style.fontSize = '1.3rem';
-      input.style.padding = '10px';
-      input.style.borderRadius = '10px';
-      input.style.border = 'none';
-      input.style.marginBottom = '10px';
-      input.style.width = '100%';
-      answersEl.appendChild(input);
-
-      const submitBtn = document.createElement('button');
-      submitBtn.className = 'answer-btn';
-      submitBtn.textContent = 'تأكيد';
-      submitBtn.onclick = () => {
-        let userAns = input.value.trim();
-        if(userAns === '') return alert('الرجاء كتابة الإجابة');
-        checkAnswer(qObj.answer, userAns);
-      };
-      answersEl.appendChild(submitBtn);
-
-      input.focus();
-    } else if(qObj.type === 'math') {
-      const input = document.createElement('input');
-      input.type = 'number';
-      input.placeholder = 'اكتب الإجابة الرقمية هنا';
-      input.style.fontSize = '1.3rem';
-      input.style.padding = '10px';
-      input.style.borderRadius = '10px';
-      input.style.border = 'none';
-      input.style.marginBottom = '10px';
-      input.style.width = '100%';
-      answersEl.appendChild(input);
-
-      const submitBtn = document.createElement('button');
-      submitBtn.className = 'answer-btn';
-      submitBtn.textContent = 'تأكيد';
-      submitBtn.onclick = () => {
-        let userAns = input.value.trim();
-        if(userAns === '') return alert('الرجاء كتابة الإجابة');
-        checkAnswer(qObj.answer, userAns);
-      };
-      answersEl.appendChild(submitBtn);
-
-      input.focus();
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
   }
 
-  // تحقق من الإجابة وحدث النتيجة
-  function checkAnswer(correct, user) {
-    const buttons = document.querySelectorAll('.answer-btn');
+  function getRandomQuestion(level) {
+    const levelQuestions = questionsBank[level];
+    if (!levelQuestions) return null;
+
+    let question;
+    let tries = 0;
+    do {
+      question = levelQuestions[Math.floor(Math.random() * levelQuestions.length)];
+      tries++;
+    } while (askedQuestions.has(question.q) && tries < 20);
+
+    if (tries >= 20) {
+      askedQuestions.clear();
+    }
+    askedQuestions.add(question.q);
+    return question;
+  }
+
+  const questionEl = document.getElementById("question");
+  const answersEl = document.getElementById("answers");
+  const scoreboardEl = document.getElementById("scoreboard");
+
+  function loadQuestion() {
+    const question = getRandomQuestion(difficulty);
+    if (!question) {
+      questionEl.textContent = "تم الانتهاء من جميع الأسئلة!";
+      answersEl.innerHTML = "";
+      return;
+    }
+    questionEl.textContent = question.q;
+
+    // امزج الخيارات
+    const options = [...question.options];
+    shuffle(options);
+
+    answersEl.innerHTML = "";
+    options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.classList.add("answer-btn");
+      btn.textContent = opt;
+      btn.onclick = () => handleAnswer(btn, question.a);
+      answersEl.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(button, correctAnswer) {
+    const buttons = answersEl.querySelectorAll("button");
     buttons.forEach(btn => btn.disabled = true);
 
-    let isCorrect = false;
-    if(typeof correct === 'boolean') {
-      isCorrect = (correct === user);
+    if (button.textContent === correctAnswer) {
+      button.classList.add("correct");
+      score += 10 * difficulty;
+      difficulty = Math.min(difficulty + 1, 4); // زيادة الصعوبة حتى المستوى 4
     } else {
-      // مقارنة نصية غير حساسة لحالة الأحرف والمسافات الزائدة
-      isCorrect = correct.toString().trim().toLowerCase() === user.toString().trim().toLowerCase();
+      button.classList.add("wrong");
+      // إظهار الإجابة الصحيحة
+      buttons.forEach(btn => {
+        if (btn.textContent === correctAnswer) {
+          btn.classList.add("correct");
+        }
+      });
+      difficulty = Math.max(difficulty - 1, 1); // خفض الصعوبة إلى 1 على الأقل
     }
 
-    // تعليم الأزرار
-    buttons.forEach(btn => {
-      if(btn.textContent.trim().toLowerCase() === correct.toString().trim().toLowerCase()) {
-        btn.classList.add('correct');
-      } else if(btn.textContent.trim().toLowerCase() === user.toString().trim().toLowerCase() && !isCorrect) {
-        btn.classList.add('wrong');
-      }
-    });
+    scoreboardEl.textContent = `الدرجة: ${score} | مستوى الصعوبة: ${difficulty}`;
 
-    if(isCorrect) {
-      score++;
-      if(difficulty < 5) difficulty++;
-    } else {
-      if(difficulty > 1) difficulty--;
-    }
-    updateScoreboard();
-
-    // بعد ثانية، اعرض سؤال جديد بسلاسة
+    // انتقل للسؤال التالي بعد 1.8 ثانية بصمت
     setTimeout(() => {
-      nextQuestion();
-    }, 1000);
+      loadQuestion();
+    }, 1800);
   }
 
-  // تحديث عرض النتيجة
-  function updateScoreboard() {
-    const board = document.getElementById('scoreboard');
-    board.textContent = `الدرجة: ${score} | مستوى الصعوبة: ${difficulty}`;
-  }
-
-  // ابدأ اللعبة بسؤال جديد
-  function nextQuestion() {
-    if(askedQuestions.size > 150) {
-      askedQuestions.clear(); // إعادة التعيين لمنع النقص في الأسئلة
-    }
-    const q = generateQuestion(difficulty);
-    displayQuestion(q);
-  }
-
-  // بدء اللعبة
-  updateScoreboard();
-  nextQuestion();
+  loadQuestion();
 
 })();
 </script>
