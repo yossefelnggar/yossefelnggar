@@ -1,159 +1,475 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>تحدي نجم الذكاء - اختبار تفاعلي</title>
-  <style>
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: #1a1a2e;
-      color: #eaeaea;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-      user-select: none;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 0.5em;
-      color: #ffd700;
-      text-shadow: 0 0 5px #ffd700;
-    }
-    .story {
-      background: #16213e;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      line-height: 1.5;
-      min-height: 120px;
-    }
-    .question {
-      background: #0f3460;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    button {
-      background: #e94560;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      margin: 8px 0;
-      width: 100%;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background: #d63031;
-    }
-    .result {
-      background: #0f3460;
-      padding: 20px;
-      border-radius: 15px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      color: #00ff99;
-      margin-top: 30px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>المنصة الذكية متعددة الأقسام - تحدي بلا حدود</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #eee;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(90deg, #0f3460, #16213e);
+    padding: 15px 25px;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffd700;
+    user-select: none;
+  }
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+  }
+  nav {
+    width: 220px;
+    background: #16213e;
+    border-right: 3px solid #e94560;
+    display: flex;
+    flex-direction: column;
+  }
+  nav button {
+    background: none;
+    border: none;
+    color: #eee;
+    padding: 15px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: right;
+    border-left: 5px solid transparent;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  nav button:hover, nav button.active {
+    background: #0f3460;
+    border-left: 5px solid #e94560;
+  }
+  section {
+    flex: 1;
+    padding: 25px;
+    overflow-y: auto;
+  }
+  h2 {
+    margin-top: 0;
+    color: #ffd700;
+    margin-bottom: 15px;
+  }
+  /* ---- قسم السرد القصصي ---- */
+  .story-container {
+    background: #1f2833;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .story-text {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+  }
+  .story-choices button {
+    background: #e94560;
+    border: none;
+    padding: 12px;
+    margin: 6px 0;
+    width: 100%;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .story-choices button:hover {
+    background: #d63031;
+  }
+  /* ---- قسم الاختبارات ---- */
+  .quiz-question {
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  .quiz-options label {
+    display: block;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .quiz-options input[type="radio"] {
+    margin-left: 8px;
+  }
+  .quiz-submit {
+    margin-top: 15px;
+    background: #00b894;
+    border: none;
+    padding: 12px 20px;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .quiz-submit:hover {
+    background: #019875;
+  }
+  .quiz-result {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #00ff99;
+  }
+  /* ---- قسم التحديات ---- */
+  .challenge-container {
+    background: #1f2833;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .challenge-task {
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  .challenge-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+  }
+  .challenge-submit {
+    background: #0984e3;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .challenge-submit:hover {
+    background: #0652dd;
+  }
+  .challenge-feedback {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #ffeaa7;
+  }
+  /* ---- قسم التحليل النفسي ---- */
+  .analysis-container {
+    background: #1f2833;
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 1.1rem;
+  }
+  .analysis-title {
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: #fab1a0;
+  }
+  /* ---- لوحة القيادة ---- */
+  .dashboard-container {
+    background: #1f2833;
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 1.1rem;
+  }
+  .dashboard-section {
+    margin-bottom: 20px;
+  }
+  .dashboard-section h3 {
+    margin-bottom: 10px;
+    color: #74b9ff;
+  }
+  .dashboard-item {
+    background: #0f3460;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+</style>
 </head>
 <body>
 
-  <h1>تحدي نجم الذكاء</h1>
-  <div class="story" id="story">مرحبًا بك في مغامرتك الذكية! القصة تبدأ في مدينة غامضة...</div>
-  
-  <div class="question" id="question"></div>
-  <div id="answers"></div>
+<header>المنصة الذكية متعددة الأقسام - تحدي بلا حدود</header>
 
-  <div class="result" id="result" style="display:none;"></div>
+<main>
+  <nav>
+    <button class="active" data-section="story">السرد القصصي</button>
+    <button data-section="quiz">الاختبارات الذكية</button>
+    <button data-section="challenge">التحديات العملية</button>
+    <button data-section="analysis">التحليل النفسي الذكي</button>
+    <button data-section="dashboard">لوحة القيادة</button>
+  </nav>
+
+  <section id="story" class="active-section">
+    <h2>السرد القصصي التفاعلي</h2>
+    <div class="story-container">
+      <div class="story-text" id="storyText">مرحبا بك في عالم القصة الذكي... مغامرتك تبدأ الآن!</div>
+      <div class="story-choices" id="storyChoices"></div>
+    </div>
+  </section>
+
+  <section id="quiz" style="display:none;">
+    <h2>الاختبارات الذكية</h2>
+    <div id="quizContainer">
+      <div class="quiz-question" id="quizQuestion"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <button class="quiz-submit" id="quizSubmit">إرسال الإجابة</button>
+      <div class="quiz-result" id="quizResult"></div>
+    </div>
+  </section>
+
+  <section id="challenge" style="display:none;">
+    <h2>التحديات العملية</h2>
+    <div class="challenge-container">
+      <div class="challenge-task" id="challengeTask">هل تستطيع حل هذا اللغز: ما هو الرقم التالي في التسلسل 2، 4، 8، 16، ...؟</div>
+      <input type="text" class="challenge-input" id="challengeInput" placeholder="أدخل إجابتك هنا" />
+      <button class="challenge-submit" id="challengeSubmit">تحقق من الإجابة</button>
+      <div class="challenge-feedback" id="challengeFeedback"></div>
+    </div>
+  </section>
+
+  <section id="analysis" style="display:none;">
+    <h2>التحليل النفسي الذكي</h2>
+    <div class="analysis-container" id="analysisContainer">
+      <div class="analysis-title">ملخص تحليلك النفسي بناءً على أدائك:</div>
+      <div id="analysisText">ابدأ خوض التحديات لتظهر نتائج التحليل هنا.</div>
+    </div>
+  </section>
+
+  <section id="dashboard" style="display:none;">
+    <h2>لوحة القيادة</h2>
+    <div class="dashboard-container">
+      <div class="dashboard-section">
+        <h3>النقاط والتقدم</h3>
+        <div class="dashboard-item" id="dashboardScore">نقاطك: 0</div>
+      </div>
+      <div class="dashboard-section">
+        <h3>الإنجازات</h3>
+        <div class="dashboard-item" id="dashboardAchievements">لم تحقق إنجازات بعد.</div>
+      </div>
+      <div class="dashboard-section">
+        <h3>نصائح مخصصة</h3>
+        <div class="dashboard-item" id="dashboardTips">ابدأ في اللعب لتلقي نصائح ذكية.</div>
+      </div>
+    </div>
+  </section>
+</main>
 
 <script>
-  const steps = [
+  // التنقل بين الأقسام
+  const navButtons = document.querySelectorAll('nav button');
+  const sections = document.querySelectorAll('main section');
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      sections.forEach(sec => sec.style.display = 'none');
+      const target = document.getElementById(btn.dataset.section);
+      target.style.display = 'block';
+      if(btn.dataset.section === 'story') renderStoryStep();
+      if(btn.dataset.section === 'quiz') resetQuiz();
+      if(btn.dataset.section === 'challenge') resetChallenge();
+      updateDashboard();
+      updateAnalysis();
+    });
+  });
+
+  // =========== قسم السرد القصصي =============
+  const storyData = [
     {
-      story: "أنت تمشي في شارع مظلم، تسمع صوت خطوات خلفك. ماذا تفعل؟",
-      question: "اختر رد فعلك:",
-      answers: [
-        { text: "تسرع الخطى وتفقد الهدوء", correct: true, tensionImpact: 2, intrigueImpact: 1 },
-        { text: "تتوقف وتنظر خلفك بحذر", correct: false, tensionImpact: 1, intrigueImpact: 2 },
-        { text: "تتجاهل الصوت وتواصل المشي", correct: false, tensionImpact: 0, intrigueImpact: 0 },
+      text: "أنت في غرفة مظلمة، أمامك بابان: باب خشبي وباب حديدي. ماذا تختار؟",
+      choices: [
+        { text: "الباب الخشبي", next: 1, tension: 1, intrigue: 2 },
+        { text: "الباب الحديدي", next: 2, tension: 3, intrigue: 1 }
       ]
     },
     {
-      story: "صديقك الغامض يظهر فجأة ويطلب مساعدتك في مهمة سرية.",
-      question: "هل تقبل المساعدة؟",
-      answers: [
-        { text: "نعم، مغامراتي تبدأ الآن!", correct: true, tensionImpact: 3, intrigueImpact: 3 },
-        { text: "لا، أريد البقاء في أمان", correct: false, tensionImpact: 0, intrigueImpact: 0 },
+      text: "فتح الباب الخشبي يقودك إلى ممر طويل مظلم. هل تمضي قدما أم ترجع؟",
+      choices: [
+        { text: "أمضي قدماً", next: 3, tension: 3, intrigue: 3 },
+        { text: "أرجع", next: 0, tension: 0, intrigue: 0 }
       ]
     },
     {
-      story: "المهمة تتطلب منك حل لغز قديم.",
-      question: "ما هو مفتاح اللغز؟",
-      answers: [
-        { text: "الشجاعة", correct: false, tensionImpact: 1, intrigueImpact: 0 },
-        { text: "الحكمة", correct: true, tensionImpact: 2, intrigueImpact: 3 },
-        { text: "الصبر", correct: false, tensionImpact: 1, intrigueImpact: 1 },
+      text: "الباب الحديدي يُصدر صوت صرير عالي، هل تصبر أم تفر؟",
+      choices: [
+        { text: "أصبر وأتقدم", next: 3, tension: 4, intrigue: 4 },
+        { text: "أهرب", next: 0, tension: 0, intrigue: 0 }
+      ]
+    },
+    {
+      text: "وجدت غرفة بها صندوق غامض. هل تفتحه؟",
+      choices: [
+        { text: "نعم، أفتحه", next: 4, tension: 2, intrigue: 5 },
+        { text: "لا، أتركه", next: 0, tension: 0, intrigue: 0 }
+      ]
+    },
+    {
+      text: "داخل الصندوق وجدت خريطة كنز! انتهت القصة هنا. هل تريد اللعب مجددًا؟",
+      choices: [
+        { text: "نعم، ابدأ من جديد", next: 0, tension: 0, intrigue: 0 }
       ]
     }
   ];
-
-  let currentStep = 0;
-  let score = 0;
+  let currentStoryIndex = 0;
   let storyState = { tension: 0, intrigue: 0 };
 
-  const storyEl = document.getElementById("story");
-  const questionEl = document.getElementById("question");
-  const answersEl = document.getElementById("answers");
-  const resultEl = document.getElementById("result");
+  const storyTextEl = document.getElementById('storyText');
+  const storyChoicesEl = document.getElementById('storyChoices');
 
-  function renderStep() {
-    if(currentStep >= steps.length) {
-      showResult();
-      return;
-    }
-
-    const step = steps[currentStep];
-    storyEl.textContent = step.story;
-    questionEl.textContent = step.question;
-
-    answersEl.innerHTML = "";
-    step.answers.forEach((answer, idx) => {
-      const btn = document.createElement("button");
-      btn.textContent = answer.text;
-      btn.onclick = () => selectAnswer(answer);
-      answersEl.appendChild(btn);
+  function renderStoryStep() {
+    const step = storyData[currentStoryIndex];
+    storyTextEl.textContent = step.text;
+    storyChoicesEl.innerHTML = '';
+    step.choices.forEach(choice => {
+      const btn = document.createElement('button');
+      btn.textContent = choice.text;
+      btn.onclick = () => {
+        storyState.tension += choice.tension;
+        storyState.intrigue += choice.intrigue;
+        currentStoryIndex = choice.next;
+        renderStoryStep();
+        updateDashboard();
+        updateAnalysis();
+      };
+      storyChoicesEl.appendChild(btn);
     });
   }
 
-  function selectAnswer(answer) {
-    // تحديث النقاط والحالة
-    if(answer.correct) score += 10;
-    storyState.tension += answer.tensionImpact;
-    storyState.intrigue += answer.intrigueImpact;
+  // =========== قسم الاختبارات ============
+  const quizQuestions = [
+    {
+      question: "ما هو أصل كلمة 'برمجة'؟",
+      options: ["اللغة الفرنسية", "اللغة الإنجليزية", "اللغة العربية", "اللغة اللاتينية"],
+      correctIndex: 1
+    },
+    {
+      question: "أي لغة برمجة تستخدم في تطوير تطبيقات أندرويد رسمياً؟",
+      options: ["جافا", "سي++", "بايثون", "روبي"],
+      correctIndex: 0
+    },
+    {
+      question: "ما هو الناتج من التعبير 5 + 3 * 2؟",
+      options: ["16", "11", "10", "8"],
+      correctIndex: 1
+    }
+  ];
+  let currentQuizIndex = 0;
+  let quizScore = 0;
 
-    currentStep++;
-    renderStep();
+  const quizQuestionEl = document.getElementById('quizQuestion');
+  const quizOptionsEl = document.getElementById('quizOptions');
+  const quizSubmitBtn = document.getElementById('quizSubmit');
+  const quizResultEl = document.getElementById('quizResult');
+
+  function resetQuiz() {
+    currentQuizIndex = 0;
+    quizScore = 0;
+    quizResultEl.textContent = '';
+    renderQuizQuestion();
   }
 
-  function showResult() {
-    storyEl.style.display = "none";
-    questionEl.style.display = "none";
-    answersEl.style.display = "none";
-
-    resultEl.style.display = "block";
-    let mood = "";
-    if(storyState.tension > 5) mood += "أنت شخص يواجه التحديات بشجاعة! ";
-    if(storyState.intrigue > 5) mood += "ذهنك مليء بالفضول والإبداع!";
-
-    resultEl.textContent = `نقاطك: ${score}. ${mood || "لقد أكملت المغامرة! استمر في التطور."}`;
+  function renderQuizQuestion() {
+    const q = quizQuestions[currentQuizIndex];
+    quizQuestionEl.textContent = q.question;
+    quizOptionsEl.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const id = `quizOption${i}`;
+      const label = document.createElement('label');
+      label.htmlFor = id;
+      label.textContent = opt;
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'quiz';
+      radio.id = id;
+      radio.value = i;
+      label.prepend(radio);
+      quizOptionsEl.appendChild(label);
+    });
   }
 
-  renderStep();
-</script>
+  quizSubmitBtn.onclick = () => {
+    const selected = document.querySelector('input[name="quiz"]:checked');
+    if(!selected) {
+      quizResultEl.style.color = "#ff7675";
+      quizResultEl.textContent = "الرجاء اختيار إجابة قبل الإرسال";
+      return;
+    }
+    quizResultEl.style.color = "#00ff99";
+    const answerIndex = Number(selected.value);
+    const correct = quizQuestions[currentQuizIndex].correctIndex;
+    if(answerIndex === correct) {
+      quizScore += 10;
+      quizResultEl.textContent = "إجابة صحيحة! ✅";
+    } else {
+      quizResultEl.textContent = `خطأ! الإجابة الصحيحة: ${quizQuestions[currentQuizIndex].options[correct]}`;
+    }
+    currentQuizIndex++;
+    updateDashboard();
+    updateAnalysis();
 
-</body>
-</html>
+    if(currentQuizIndex < quizQuestions.length) {
+      setTimeout(() => {
+        quizResultEl.textContent = '';
+        renderQuizQuestion();
+      }, 2000);
+    } else {
+      setTimeout(() => {
+        quizResultEl.textContent = `انتهى الاختبار! مجموع نقاطك: ${quizScore}`;
+      }, 2000);
+    }
+  };
+
+  // =========== قسم التحديات العملية ============
+  const challengeTaskEl = document.getElementById('challengeTask');
+  const challengeInputEl = document.getElementById('challengeInput');
+  const challengeSubmitBtn = document.getElementById('challengeSubmit');
+  const challengeFeedbackEl = document.getElementById('challengeFeedback');
+
+  const challengeAnswer = "32";
+
+  function resetChallenge() {
+    challengeInputEl.value = '';
+    challengeFeedbackEl.textContent = '';
+  }
+
+  challengeSubmitBtn.onclick = () => {
+    const answer = challengeInputEl.value.trim();
+    if(!answer) {
+      challengeFeedbackEl.style.color = '#ff7675';
+      challengeFeedbackEl.textContent = 'الرجاء إدخال إجابة.';
+      return;
+    }
+    if(answer === challengeAnswer) {
+      challengeFeedbackEl.style.color = '#00ff99';
+      challengeFeedbackEl.textContent = 'إجابة صحيحة! أنت متمكن.';
+      quizScore += 15; // نكسب نقاط هنا أيضاً
+    } else {
+      challengeFeedbackEl.style.color = '#ff7675';
+      challengeFeedbackEl.textContent = 'إجابة خاطئة، حاول مرة أخرى.';
+    }
+    updateDashboard();
+    updateAnalysis();
+  };
+
+  // =========== قسم التحليل النفسي الذكي =============
+  const analysisTextEl = document.getElementById('analysisText');
+
+  function updateAnalysis() {
+    const tension = storyState.tension;
+    const intrigue = storyState.intrigue;
+    let analysis = "";
+
+    if(tension > 8 && intrigue > 8) {
+      analysis = "أنت مبدع ومغامر، تواجه
