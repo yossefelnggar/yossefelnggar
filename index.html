@@ -3,27 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>تحدي ذكاء لا نهائي</title>
+  <title>تحدي الذكاء الفائق</title>
   <style>
     body {
-      background-color: #f0f4f8;
-      font-family: 'Tahoma', sans-serif;
+      background: linear-gradient(to bottom, #1e3a8a, #2563eb);
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
       padding: 40px;
-      text-align: center;
       direction: rtl;
     }
 
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
-      background: white;
+      background: #ffffff10;
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
       padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
     }
 
     h1 {
-      color: #111827;
+      font-size: 32px;
+      margin-bottom: 30px;
     }
 
     .question {
@@ -31,52 +33,65 @@
       margin-bottom: 20px;
     }
 
+    .options {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
     .options button {
-      margin: 10px;
-      padding: 12px 20px;
-      font-size: 16px;
+      padding: 12px;
+      font-size: 18px;
       border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s;
       background-color: #3b82f6;
       color: white;
-      border-radius: 6px;
-      cursor: pointer;
     }
 
     .options button:hover {
-      background-color: #2563eb;
+      transform: scale(1.02);
     }
 
-    #score, #timer, #counter {
-      margin-top: 15px;
+    .correct {
+      background-color: #16a34a !important;
+    }
+
+    .wrong {
+      background-color: #dc2626 !important;
+    }
+
+    #timer, #counter, #score {
       font-size: 18px;
-      color: #374151;
+      margin-top: 10px;
     }
 
     #endBtn {
-      margin-top: 30px;
-      background-color: #ef4444;
-      color: white;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 6px;
+      margin-top: 20px;
+      background-color: #f43f5e;
+      padding: 10px 20px;
       font-size: 16px;
+      border-radius: 8px;
+      border: none;
       cursor: pointer;
-    }
-
-    #endBtn:hover {
-      background-color: #dc2626;
+      color: white;
     }
 
     #finalResult {
-      font-size: 20px;
-      color: #059669;
       margin-top: 30px;
+      background-color: #fff;
+      color: #111827;
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🧠 تحدي الذكاء المفتوح</h1>
+    <h1>🔥 تحدي الذكاء الفائق</h1>
     <div id="quiz">
       <div class="question" id="question"></div>
       <div class="options" id="options"></div>
@@ -91,15 +106,13 @@
   <script>
     const questions = [
       { question: "ما هو ناتج 7 × 8؟", options: ["54", "56", "64", "58"], correct: 1 },
-      { question: "ما هو أكبر كوكب في المجموعة الشمسية؟", options: ["الأرض", "المشتري", "المريخ", "زحل"], correct: 1 },
-      { question: "أكمل: 2، 4، 8، ... ؟", options: ["12", "16", "18", "20"], correct: 1 },
-      { question: "ما هو عكس كلمة (ذكي)؟", options: ["ضعيف", "غبي", "سريع", "بطيء"], correct: 1 },
-      { question: "أي من الأشكال التالية لا ينتمي: مربع، مثلث، دائرة، مكعب؟", options: ["مربع", "دائرة", "مثلث", "مكعب"], correct: 3 },
-      { question: "إذا كانت الساعة الآن 3:15، فما الزاوية بين العقربين؟", options: ["7.5°", "0°", "90°", "45°"], correct: 0 },
-      { question: "ما عدد أرجل العنكبوت؟", options: ["4", "6", "8", "10"], correct: 2 },
-      { question: "ما هو العنصر المعدني؟", options: ["أكسجين", "حديد", "هيليوم", "كربون"], correct: 1 },
-      { question: "لون الشمس الحقيقي؟", options: ["أصفر", "أبيض", "أزرق", "أحمر"], correct: 1 },
-      { question: "كم صفر في المليون؟", options: ["4", "5", "6", "7"], correct: 2 }
+      { question: "أكبر كوكب في النظام الشمسي؟", options: ["المريخ", "المشتري", "نبتون", "زحل"], correct: 1 },
+      { question: "عدد أرجل العنكبوت؟", options: ["4", "6", "8", "10"], correct: 2 },
+      { question: "عاصمة اليابان؟", options: ["أوساكا", "طوكيو", "كيوتو", "هيروشيما"], correct: 1 },
+      { question: "أي العناصر التالية غاز نبيل؟", options: ["أكسجين", "نيون", "كربون", "حديد"], correct: 1 },
+      { question: "ما هو العنصر الذي رمزه Fe؟", options: ["فضة", "حديد", "ذهب", "نحاس"], correct: 1 },
+      { question: "أي الحيوانات التالية لا يبيض؟", options: ["سلحفاة", "نسر", "قطة", "سمكة"], correct: 2 },
+      { question: "ما هو 2^4؟", options: ["8", "12", "16", "24"], correct: 2 },
     ];
 
     let score = 0;
@@ -121,16 +134,29 @@
       currentQuestion.options.forEach((opt, index) => {
         const btn = document.createElement("button");
         btn.innerText = opt;
-        btn.onclick = () => {
-          if (index === currentQuestion.correct) score++;
-          count++;
-          updateStatus();
-          showQuestion();
-        };
+        btn.onclick = () => handleAnswer(btn, index);
         optionsDiv.appendChild(btn);
       });
 
       resetTimer();
+    }
+
+    function handleAnswer(button, selectedIndex) {
+      clearInterval(timer);
+      const options = document.querySelectorAll("#options button");
+      options.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === currentQuestion.correct) btn.classList.add("correct");
+        else if (idx === selectedIndex) btn.classList.add("wrong");
+      });
+
+      if (selectedIndex === currentQuestion.correct) score++;
+      count++;
+      updateStatus();
+
+      setTimeout(() => {
+        showQuestion();
+      }, 1500);
     }
 
     function resetTimer() {
@@ -144,9 +170,20 @@
           clearInterval(timer);
           count++;
           updateStatus();
-          showQuestion();
+          showCorrectOnly();
+          setTimeout(() => {
+            showQuestion();
+          }, 1500);
         }
       }, 1000);
+    }
+
+    function showCorrectOnly() {
+      const options = document.querySelectorAll("#options button");
+      options.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === currentQuestion.correct) btn.classList.add("correct");
+      });
     }
 
     function updateStatus() {
@@ -158,11 +195,11 @@
       clearInterval(timer);
       document.getElementById("quiz").style.display = "none";
       document.getElementById("finalResult").innerHTML = `
-        <h2>🎯 النتيجة النهائية</h2>
-        <p>الأسئلة التي أجبتها: ${count}</p>
-        <p>الإجابات الصحيحة: ${score}</p>
-        <p>الإجابات الخاطئة: ${count - score}</p>
-        <p>نسبة الذكاء الظاهرة (تقريبية): <strong>${Math.round((score / count) * 100)}%</strong></p>
+        <h2>📊 النتيجة النهائية</h2>
+        <p>عدد الأسئلة: ${count}</p>
+        <p>إجابات صحيحة: ${score}</p>
+        <p>إجابات خاطئة: ${count - score}</p>
+        <p>نسبة النجاح: <strong>${Math.round((score / count) * 100) || 0}%</strong></p>
       `;
     }
 
