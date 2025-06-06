@@ -1,229 +1,350 @@
 <!DOCTYPE html>
-<html lang="ar">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>تحدي الذكاء الفاخر</title>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap");
-
-      * {
-        box-sizing: border-box;
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تحدي الذكاء الفاخر - بلا أخطاء</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap');
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(
+          rgba(0, 0, 0, 0.85),
+          rgba(0, 0, 0, 0.85)
+        ),
+        url('https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=1470&q=80')
+          no-repeat center center fixed;
+      background-size: cover;
+      color: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      user-select: none;
+    }
+    h1 {
+      font-size: 3rem;
+      margin: 30px 0 10px;
+      background: linear-gradient(45deg, #00ffff, #ff00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: pulse 3s infinite;
+      text-align: center;
+    }
+    .score-box {
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+      color: #00ffc3;
+      font-weight: 700;
+      text-align: center;
+    }
+    .timer {
+      font-size: 1.1rem;
+      color: #ffcc00;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .question-box {
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid #444;
+      border-radius: 30px;
+      padding: 40px;
+      width: 95%;
+      max-width: 800px;
+      box-shadow: 0 0 60px rgba(0, 255, 255, 0.15);
+      animation: fadeIn 0.8s ease-in-out;
+      transition: all 0.4s ease;
+      user-select: none;
+    }
+    .question {
+      font-size: 1.9rem;
+      margin-bottom: 30px;
+      text-align: center;
+      color: #00e0ff;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .answers button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      background: linear-gradient(135deg, #111, #222);
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: 2px solid #00ffc3;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+    .answers button:hover {
+      background: #00ffc3;
+      color: #000;
+    }
+    .answers button.correct {
+      background-color: #00cc66 !important;
+      border-color: #00cc66;
+      color: #fff;
+      cursor: default;
+    }
+    .answers button.wrong {
+      background-color: #cc0033 !important;
+      border-color: #cc0033;
+      color: #fff;
+      cursor: default;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
       }
-
-      body {
-        font-family: "Cairo", sans-serif;
-        background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
-          url("https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=1470&q=80")
-            no-repeat center center fixed;
-        background-size: cover;
-        color: #f2f2f2;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
-
-      h1 {
-        font-size: 3rem;
-        margin: 30px 0 10px;
-        background: linear-gradient(45deg, #00ffff, #ff00ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: pulse 3s infinite;
-        text-align: center;
+    }
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
       }
-
-      .score-box {
-        margin-bottom: 10px;
-        font-size: 1.2rem;
-        color: #00ffc3;
+      50% {
+        transform: scale(1.05);
+        opacity: 0.9;
       }
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 تحدي الذكاء الخارق</h1>
+  <div class="score-box" id="scoreBox">نقاطك: 0</div>
+  <div class="timer" id="timer">الوقت: 15 ثانية</div>
+  <div class="question-box" role="main" aria-live="polite" aria-atomic="true">
+    <div class="question" id="question">جارٍ تحميل السؤال...</div>
+    <div class="answers" id="answers" role="list"></div>
+  </div>
 
-      .timer {
-        font-size: 1.1rem;
-        color: #ffcc00;
-        margin-bottom: 20px;
-      }
-
-      .question-box {
-        background: rgba(20, 20, 20, 0.95);
-        border: 1px solid #444;
-        border-radius: 30px;
-        padding: 40px;
-        width: 95%;
-        max-width: 800px;
-        box-shadow: 0 0 60px rgba(0, 255, 255, 0.15);
-        animation: fadeIn 1s ease-in-out;
-        transition: all 0.4s ease;
-      }
-
-      .question {
-        font-size: 1.8rem;
-        margin-bottom: 30px;
-        text-align: center;
-        color: #00e0ff;
-      }
-
-      .answers button {
-        display: block;
-        width: 100%;
-        padding: 15px;
-        margin: 10px 0;
-        background: linear-gradient(135deg, #111, #222);
-        color: white;
-        font-size: 1.2rem;
-        font-weight: bold;
-        border: 2px solid #00ffc3;
-        border-radius: 16px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .answers button:hover {
-        background: #00ffc3;
-        color: #000;
-      }
-
-      .answers button.correct {
-        background-color: #00cc66 !important;
-        border-color: #00cc66;
-        color: #fff;
-      }
-
-      .answers button.wrong {
-        background-color: #cc0033 !important;
-        border-color: #cc0033;
-        color: #fff;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        50% {
-          transform: scale(1.05);
-          opacity: 0.9;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <h1>🧠 تحدي الذكاء الخارق</h1>
-    <div class="score-box" id="scoreBox">نقاطك: 0</div>
-    <div class="timer" id="timer">الوقت: 15 ثانية</div>
-    <div class="question-box">
-      <div class="question" id="question"></div>
-      <div class="answers" id="answers"></div>
-    </div>
-
-    <script>
+  <script>
+    (() => {
+      const questionTime = 15; // seconds per question
       let score = 0;
-      let timer;
-      let timeLeft = 15;
+      let timeLeft = questionTime;
+      let timerInterval;
+      let usedQuestions = new Set();
 
-      const questionsPool = [
+      // أسئلة متنوعة ونمطيات مختلفة
+      const questionGenerators = [
+        // رياضيات - جمع أعداد عشوائية
         () => {
           const x = Math.floor(Math.random() * 30);
           const y = Math.floor(Math.random() * 30);
-          const a = x + y;
+          const answer = x + y;
+          const options = shuffle([
+            answer,
+            answer + Math.floor(Math.random() * 5) + 1,
+            answer - (Math.floor(Math.random() * 5) + 1),
+            answer + Math.floor(Math.random() * 10) + 6,
+          ]);
           return {
             q: `ما ناتج ${x} + ${y}؟`,
-            a: a,
-            options: shuffle([a, a + 2, a - 2, a + 5]),
+            a: answer,
+            options,
           };
         },
-        () => ({
-          q: "ما عاصمة أستراليا؟",
-          a: "كانبيرا",
-          options: ["سيدني", "ملبورن", "كانبيرا", "بيرث"],
-        }),
-        () => ({
-          q: "ما هو الكوكب الذي يعرف بالكوكب الأحمر؟",
-          a: "المريخ",
-          options: ["المريخ", "المشتري", "الزهرة", "زحل"],
-        }),
-        () => ({
-          q: "إذا كانت كل القطط تحب السمك، ولولو قطة، فهل لولو تحب السمك؟",
-          a: "نعم",
-          options: ["نعم", "لا", "ربما", "غير معروف"],
-        }),
-        () => ({
-          q: "ما هو أكبر محيط على وجه الأرض؟",
-          a: "المحيط الهادئ",
-          options: ["الأطلسي", "الهندي", "الهادئ", "المتجمد"],
-        }),
+
+        // سؤال جغرافي
+        () => {
+          return {
+            q: 'ما هي عاصمة أستراليا؟',
+            a: 'كانبيرا',
+            options: shuffle(['سيدني', 'ملبورن', 'كانبيرا', 'بيرث']),
+          };
+        },
+
+        // سؤال ثقافي
+        () => {
+          return {
+            q: 'من هو مؤلف رواية "مئة عام من العزلة"؟',
+            a: 'غابرييل غارسيا ماركيز',
+            options: shuffle([
+              'غابرييل غارسيا ماركيز',
+              'نجيب محفوظ',
+              'تولستوي',
+              'إرنست همنغواي',
+            ]),
+          };
+        },
+
+        // سؤال منطق بسيط
+        () => {
+          return {
+            q: 'إذا كانت كل القطط تحب السمك، ولولو قطة، فهل لولو تحب السمك؟',
+            a: 'نعم',
+            options: shuffle(['نعم', 'لا', 'ربما', 'غير معروف']),
+          };
+        },
+
+        // سؤال معلومات عامة
+        () => {
+          return {
+            q: 'ما هو أكبر محيط على وجه الأرض؟',
+            a: 'المحيط الهادئ',
+            options: shuffle([
+              'الأطلسي',
+              'الهندي',
+              'المحيط الهادئ',
+              'المتجمد',
+            ]),
+          };
+        },
+
+        // سؤال رياضيات - ضرب أعداد
+        () => {
+          const a = Math.floor(Math.random() * 12) + 1;
+          const b = Math.floor(Math.random() * 12) + 1;
+          const ans = a * b;
+          const opts = shuffle([
+            ans,
+            ans + Math.floor(Math.random() * 10) + 1,
+            ans - (Math.floor(Math.random() * 10) + 1),
+            ans + Math.floor(Math.random() * 15) + 11,
+          ]);
+          return {
+            q: `ما ناتج ${a} × ${b}؟`,
+            a: ans,
+            options: opts,
+          };
+        },
+
+        // سؤال ثقافي
+        () => {
+          return {
+            q: 'ما هي لغة البرمجة الأكثر استخداماً في تطوير الويب؟',
+            a: 'جافاسكريبت',
+            options: shuffle([
+              'جافاسكريبت',
+              'بايثون',
+              'جافا',
+              'روبي',
+            ]),
+          };
+        },
+
+        // سؤال معلومات عامة
+        () => {
+          return {
+            q: 'أي دولة يُطلق عليها "بلد الشمس المشرقة"؟',
+            a: 'اليابان',
+            options: shuffle([
+              'الصين',
+              'اليابان',
+              'كوريا الجنوبية',
+              'تايوان',
+            ]),
+          };
+        },
       ];
 
+      // خلط عناصر مصفوفة
       function shuffle(array) {
-        return array.sort(() => Math.random() - 0.5);
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
       }
 
+      // تحميل سؤال جديد بدون تكرار
       function loadQuestion() {
-        clearInterval(timer);
-        timeLeft = 15;
-        document.getElementById("timer").innerText = `الوقت: ${timeLeft} ثانية`;
+        clearInterval(timerInterval);
+        timeLeft = questionTime;
+        document.getElementById('timer').innerText = `الوقت: ${timeLeft} ثانية`;
 
-        timer = setInterval(() => {
-          timeLeft--;
-          document.getElementById(
-            "timer"
-          ).innerText = `الوقت: ${timeLeft} ثانية`;
-          if (timeLeft <= 0) {
-            clearInterval(timer);
-            loadQuestion();
-          }
-        }, 1000);
+        let qObj, qIndex;
+        do {
+          qIndex = Math.floor(Math.random() * questionGenerators.length);
+          qObj = questionGenerators[qIndex]();
+        } while (usedQuestions.has(qObj.q) && usedQuestions.size < 1000); // منع التكرار لحد 1000 سؤال
 
-        const qData =
-          questionsPool[Math.floor(Math.random() * questionsPool.length)]();
+        usedQuestions.add(qObj.q);
 
-        document.getElementById("question").innerText = qData.q;
-        const answersDiv = document.getElementById("answers");
-        answersDiv.innerHTML = "";
-        qData.options.forEach((opt) => {
-          const btn = document.createElement("button");
-          btn.innerText = opt;
-          btn.onclick = () => handleAnswer(btn, opt == qData.a);
+        const questionEl = document.getElementById('question');
+        questionEl.innerText = qObj.q;
+
+        const answersDiv = document.getElementById('answers');
+        answersDiv.innerHTML = '';
+
+        qObj.options.forEach((option) => {
+          const btn = document.createElement('button');
+          btn.innerText = option;
+          btn.setAttribute('role', 'listitem');
+          btn.onclick = () => handleAnswer(btn, option === qObj.a);
           answersDiv.appendChild(btn);
         });
+
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          document.getElementById('timer').innerText = `الوقت: ${timeLeft} ثانية`;
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            markCorrectAnswer(qObj.a);
+            setTimeout(() => loadQuestion(), 1200);
+          }
+        }, 1000);
       }
 
+      // التعامل مع الإجابة
       function handleAnswer(button, isCorrect) {
-        const buttons = document.querySelectorAll(".answers button");
-        buttons.forEach((btn) => (btn.disabled = true));
-
+        clearInterval(timerInterval);
+        disableButtons(true);
         if (isCorrect) {
           score++;
-          document.getElementById("scoreBox").innerText = `نقاطك: ${score}`;
-          button.classList.add("correct");
+          document.getElementById('scoreBox').innerText = `نقاطك: ${score}`;
+          button.classList.add('correct');
           setTimeout(() => loadQuestion(), 700);
         } else {
-          button.classList.add("wrong");
-          setTimeout(() => {
-            button.classList.remove("wrong");
-            buttons.forEach((btn) => (btn.disabled = false));
-          }, 800);
+          button.classList.add('wrong');
+          markCorrectAnswer();
+          setTimeout(() => loadQuestion(), 1200);
         }
       }
 
+      // تعطيل أو تفعيل الأزرار
+      function disableButtons(disable) {
+        const buttons = document.querySelectorAll('.answers button');
+        buttons.forEach((btn) => {
+          btn.disabled = disable;
+          if (!disable) {
+            btn.classList.remove('correct', 'wrong');
+          }
+        });
+      }
+
+      // تمييز الإجابة الصحيحة بعد خطأ أو انتهاء الوقت
+      function markCorrectAnswer(correctAnswer) {
+        const buttons = document.querySelectorAll('.answers button');
+        buttons.forEach((btn) => {
+          if (btn.innerText === correctAnswer) {
+            btn.classList.add('correct');
+          }
+        });
+      }
+
+      // بداية اللعبة
       loadQuestion();
-    </script>
-  </body>
+    })();
+  </script>
+</body>
 </html>
