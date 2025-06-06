@@ -1,242 +1,147 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>منصة المستقبل: قصة التحول والابتكار بلا حدود</title>
-<style>
-  body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: #0a0a23;
-    color: #eee;
-    margin: 0;
-    padding: 0;
-    direction: rtl;
-  }
-  header {
-    background: #111146;
-    padding: 20px;
-    text-align: center;
-    font-size: 2.2em;
-    font-weight: bold;
-    letter-spacing: 1.5px;
-    border-bottom: 3px solid #08f;
-  }
-  nav {
-    display: flex;
-    background: #12125e;
-    overflow-x: auto;
-    border-bottom: 2px solid #08f;
-  }
-  nav button {
-    flex: 1 0 auto;
-    background: transparent;
-    border: none;
-    padding: 15px 20px;
-    color: #a0a0f7;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s;
-  }
-  nav button:hover,
-  nav button.active {
-    background: #08f;
-    color: #fff;
-    font-weight: 700;
-  }
-  main {
-    padding: 30px 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  section {
-    display: none;
-    animation: fadeIn 0.6s ease forwards;
-  }
-  section.active {
-    display: block;
-  }
-  h2 {
-    color: #08f;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #08f;
-    padding-bottom: 8px;
-  }
-  p {
-    line-height: 1.7;
-    font-size: 1.1em;
-  }
-  ul {
-    margin: 10px 0 20px 20px;
-    list-style-type: square;
-  }
-  ul li {
-    margin-bottom: 8px;
-  }
-  /* Fade animation */
-  @keyframes fadeIn {
-    from {opacity: 0; transform: translateY(20px);}
-    to {opacity: 1; transform: translateY(0);}
-  }
-  /* Responsive */
-  @media (max-width: 600px) {
-    nav button {
-      font-size: 1em;
-      padding: 12px 10px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لعبة ذكاء لا نهائية</title>
+  <style>
+    body {
+      background-color: #f0f4f8;
+      font-family: 'Tahoma', sans-serif;
+      padding: 40px;
+      text-align: center;
+      direction: rtl;
     }
-  }
-</style>
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #111827;
+    }
+
+    .question {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .options button {
+      margin: 10px;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #3b82f6;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .options button:hover {
+      background-color: #2563eb;
+    }
+
+    #score {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #10b981;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>🧠 تحدي الذكاء المفتوح</h1>
+    <div id="quiz">
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+    </div>
+    <div id="score"></div>
+  </div>
 
-<header>
-  منصة المستقبل: قصة التحول والابتكار بلا حدود
-</header>
+  <script>
+    const questions = [
+      {
+        question: "ما هو ناتج 7 × 8؟",
+        options: ["54", "56", "64", "58"],
+        correct: 1
+      },
+      {
+        question: "ما هو أكبر كوكب في المجموعة الشمسية؟",
+        options: ["الأرض", "المشتري", "المريخ", "زحل"],
+        correct: 1
+      },
+      {
+        question: "أكمل: 2، 4، 8، ... ؟",
+        options: ["12", "16", "18", "20"],
+        correct: 1
+      },
+      {
+        question: "ما هو عكس كلمة (ذكي)؟",
+        options: ["ضعيف", "غبي", "سريع", "بطيء"],
+        correct: 1
+      },
+      {
+        question: "أي من الأشكال التالية لا ينتمي: مربع، مثلث، دائرة، مكعب؟",
+        options: ["مربع", "دائرة", "مثلث", "مكعب"],
+        correct: 3
+      },
+      {
+        question: "إذا كانت الساعة الآن 3:15، فما الزاوية بين عقرب الساعات والدقائق؟",
+        options: ["7.5°", "0°", "90°", "45°"],
+        correct: 0
+      },
+      {
+        question: "ما هو عدد الأحرف في كلمة 'ذكاء'؟",
+        options: ["3", "4", "5", "6"],
+        correct: 1
+      },
+      {
+        question: "أي من هذه العناصر معدن؟",
+        options: ["أكسجين", "حديد", "هيليوم", "كربون"],
+        correct: 1
+      },
+      {
+        question: "ما هو لون الشمس؟",
+        options: ["أصفر", "أبيض", "أزرق", "أحمر"],
+        correct: 1
+      },
+      {
+        question: "كم عدد أرجل العنكبوت؟",
+        options: ["4", "6", "8", "10"],
+        correct: 2
+      }
+    ];
 
-<nav aria-label="تنقل بين أقسام المنصة">
-  <button class="active" data-section="story">السرد القصصي</button>
-  <button data-section="questions">الأسئلة الذكية</button>
-  <button data-section="logic">التحليل المنطقي</button>
-  <button data-section="growth">Growth Hacking</button>
-  <button data-section="physics">مفاهيم الفيزياء</button>
-  <button data-section="leadership">القيادة والتأثير</button>
-  <button data-section="innovation">الابتكار المستدام</button>
-</nav>
+    let score = 0;
 
-<main>
+    function getRandomQuestion() {
+      return questions[Math.floor(Math.random() * questions.length)];
+    }
 
-  <section id="story" class="active" tabindex="0" aria-label="قسم السرد القصصي">
-    <h2>قسم السرد القصصي: قصة الرؤية والقيادة</h2>
-    <p><strong>الهدف:</strong> بناء سرد مهيب، يشحن القارئ بالطاقة، يخلق اتصالًا عاطفيًا مع الفكرة، ويحفز القادة على تبني رؤية لا تعرف المستحيل.</p>
-    <ul>
-      <li>سرد محفز متعدد الطبقات (شخصيات، تحديات، تحولات، انتصارات).</li>
-      <li>دمج علم النفس السردي مع تقنيات الـ“Hero’s Journey” و“Transformation Arc”.</li>
-      <li>تصوير سيناريوهات مستقبلية فائقة الذكاء والتقدم.</li>
-    </ul>
-    <p><strong>وظائف رئيسية:</strong></p>
-    <ul>
-      <li>توليد قصص ديناميكية بناءً على مدخلات المستخدم.</li>
-      <li>مقاطع سردية للتوظيف في العروض والتسويق وخطابات القيادة.</li>
-    </ul>
-  </section>
+    function showQuestion() {
+      const q = getRandomQuestion();
+      document.getElementById("question").innerText = q.question;
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
 
-  <section id="questions" tabindex="0" aria-label="قسم الأسئلة الذكية">
-    <h2>قسم الأسئلة الذكية: محفزات التفكير والابتكار</h2>
-    <p><strong>الهدف:</strong> تفعيل العقل التحليلي والنقدي عبر أسئلة موجهة تفتح آفاقًا جديدة للأفكار.</p>
-    <ul>
-      <li>أسئلة تتحدى الفرضيات والقواعد.</li>
-      <li>تصنيفات: استكشافية، استراتيجية، فلسفية، تقنية، تسويقية، نفسية.</li>
-    </ul>
-    <p><strong>وظائف رئيسية:</strong></p>
-    <ul>
-      <li>مولد أسئلة ذكي يتكيف مع موضوع المشروع.</li>
-      <li>تخصيص حسب شخصية القائد أو الفريق.</li>
-      <li>تصنيف النتائج وتوجيه النمو والتطوير.</li>
-    </ul>
-  </section>
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (index === q.correct) score++;
+          document.getElementById("score").innerText = `✔️ نتيجتك: ${score}`;
+          showQuestion(); // انتقل للسؤال التالي تلقائيًا
+        };
+        optionsDiv.appendChild(btn);
+      });
+    }
 
-  <section id="logic" tabindex="0" aria-label="قسم التحليل المنطقي">
-    <h2>قسم التحليل المنطقي: خريطة الطريق الفعلية</h2>
-    <p><strong>الهدف:</strong> تقديم بنية تفكير صارمة لترجمة الأفكار إلى خطوات قابلة للتنفيذ.</p>
-    <ul>
-      <li>أدوات تحليل SWOT متقدمة.</li>
-      <li>خرائط تدفق عمل ديناميكية قابلة للتعديل.</li>
-      <li>تقييم المخاطر مع حلول مبتكرة.</li>
-    </ul>
-    <p><strong>وظائف رئيسية:</strong></p>
-    <ul>
-      <li>تكامل مع الذكاء الاصطناعي لفحص معطيات السوق.</li>
-      <li>سيناريوهات نتائج متعددة بناءً على قرارات المستخدم.</li>
-      <li>واجهة تفاعلية لتعديل الخطط بسلاسة.</li>
-    </ul>
-  </section>
-
-  <section id="growth" tabindex="0" aria-label="قسم Growth Hacking">
-    <h2>قسم Growth Hacking: التسريع والتوسع غير المسبوق</h2>
-    <p><strong>الهدف:</strong> بناء استراتيجيات نمو خارقة مع تنفيذ فوري لتوسيع التأثير والأرباح.</p>
-    <ul>
-      <li>مكتبة تقنيات ونماذج لأسرع نمو.</li>
-      <li>أدوات أتمتة ونماذج اختبار A/B ذكية.</li>
-      <li>نظام تتبع مؤشرات الأداء (KPIs) فوري.</li>
-    </ul>
-    <p><strong>وظائف رئيسية:</strong></p>
-    <ul>
-      <li>تكتيكات مخصصة حسب نوع السوق والجمهور.</li>
-      <li>دمج مع أدوات التسويق الرقمي وتحليل البيانات.</li>
-      <li>لوحات قيادة تفاعلية لاتخاذ قرارات لحظية.</li>
-    </ul>
-  </section>
-
-  <section id="physics" tabindex="0" aria-label="قسم مفاهيم الفيزياء والتقنيات المتقدمة">
-    <h2>قسم مفاهيم الفيزياء والتقنيات المتقدمة: فتح آفاق غير متوقعة</h2>
-    <p><strong>الهدف:</strong> دمج مفاهيم متقدمة من الفيزياء وعلوم المستقبل لتحفيز ابتكارات غير تقليدية.</p>
-    <ul>
-      <li>شرح مبسط فيزياء الكم، النسبية، والذكاء الاصطناعي المتقدم.</li>
-      <li>سيناريوهات تطبيقية لتكنولوجيا المستقبل.</li>
-    </ul>
-    <p><strong>وظائف رئيسية:</strong></p>
-    <ul>
-      <li>تقديم رؤى لإعادة تعريف المنتجات والخدمات.</li>
-      <li>توليد أفكار غير متوقعة.</li>
-      <li>استشراف مخاطر وفرص التكنولوجيا.</li>
-    </ul>
-  </section>
-
-  <section id="leadership" tabindex="0" aria-label="قسم القيادة والتأثير">
-    <h2>قسم القيادة والتأثير: صناعة القادة والمغيرين</h2>
-    <p><strong>الهدف:</strong> صقل مهارات القيادة والتأثير لتحويل الأفكار إلى حركة تغيير.</p>
-    <ul>
-      <li>نماذج قيادة متقدمة.</li>
-      <li>تقنيات النفوذ والإقناع المبنية على علم النفس السلوكي.</li>
-      <li>أدوات تقييم الذات وتطوير القيادة.</li>
-    </ul>
-    <p><strong>وظائف رئيسية:</strong></p>
-    <ul>
-      <li>اختبارات تقييم القيادة مع خطة تطوير شخصية.</li>
-      <li>توصيات لبناء ثقافة مؤسسية رائدة.</li>
-      <li>سيناريوهات قيادة مبنية على مواقف حقيقية.</li>
-    </ul>
-  </section>
-
-  <section id="innovation" tabindex="0" aria-label="قسم الابتكار المستدام">
-    <h2>قسم الابتكار المستدام: توليد الأفكار المتجددة بلا توقف</h2>
-    <p><strong>الهدف:</strong> إنشاء بيئة مستمرة لتوليد الأفكار المتجددة التي تتكيف مع التغيرات الديناميكية.</p>
-    <ul>
-      <li>نظام توليد أفكار تلقائي مع خوارزميات تعلم عميق.</li>
-      <li>دمج الذكاء الاصطناعي التوليدي مع الإدخال البشري.</li>
-      <li>مكتبة إلهام تكنولوجي وفني وثقافي.</li>
-    </ul>
-    <p><strong>وظائف رئيسية:</strong></p>
-    <ul>
-      <li>ورش عمل رقمية تفاعلية لتحفيز الابتكار الجماعي.</li>
-      <li>مراقبة الاتجاهات المستقبلية وتحليل البيانات لاستخراج فرص جديدة.</li>
-      <li>نشر الأفكار وتحويلها إلى مشاريع قابلة للتنفيذ.</li>
-    </ul>
-  </section>
-
-</main>
-
-<script>
-  const buttons = document.querySelectorAll('nav button');
-  const sections = document.querySelectorAll('main section');
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // إزالة الكلاس النشط من كل زر
-      buttons.forEach(b => b.classList.remove('active'));
-      // إضافة الكلاس للزر الحالي
-      btn.classList.add('active');
-
-      // إخفاء كل الأقسام
-      sections.forEach(sec => sec.classList.remove('active'));
-
-      // إظهار القسم المرتبط
-      const sectionToShow = document.getElementById(btn.dataset.section);
-      sectionToShow.classList.add('active');
-      sectionToShow.focus();
-    });
-  });
-</script>
-
+    showQuestion();
+  </script>
 </body>
 </html>
