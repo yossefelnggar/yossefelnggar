@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>اختبار الأسئلة الشامل</title>
+<title>اختبار الأسئلة الشامل - مع تصحيح وألوان ومؤقت</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -48,15 +48,41 @@
     transition: background-color 0.3s ease;
     text-align: right;
   }
-  .options button:hover {
+  .options button:hover:not(.disabled) {
     background-color: rgba(255, 255, 255, 0.35);
   }
   .options button.selected {
-    background-color: #ffab00;
-    color: #000;
     font-weight: 700;
   }
-  #next-btn, #restart-btn {
+  .options button.correct {
+    background-color: #4CAF50 !important; /* أخضر */
+    color: #000 !important;
+    font-weight: 700;
+    cursor: default;
+  }
+  .options button.wrong {
+    background-color: #f44336 !important; /* أحمر */
+    color: #000 !important;
+    font-weight: 700;
+    cursor: default;
+  }
+  .options button.disabled {
+    cursor: default;
+  }
+  #timer {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+  #result {
+    text-align: center;
+    font-size: 22px;
+    margin-top: 30px;
+    font-weight: 600;
+  }
+  #restart-btn {
     width: 100%;
     padding: 15px;
     font-size: 20px;
@@ -65,25 +91,13 @@
     cursor: pointer;
     margin-top: 25px;
     font-weight: 700;
-    transition: background-color 0.3s ease;
-  }
-  #next-btn {
-    background-color: #ffab00;
-    color: #000;
-  }
-  #next-btn:disabled {
-    background-color: rgba(255, 171, 0, 0.5);
-    cursor: not-allowed;
-  }
-  #restart-btn {
     background-color: #00c853;
     color: #fff;
+    display: none;
+    transition: background-color 0.3s ease;
   }
-  #result {
-    text-align: center;
-    font-size: 22px;
-    margin-top: 30px;
-    font-weight: 600;
+  #restart-btn:hover {
+    background-color: #009624;
   }
   @media (max-width: 480px) {
     body {
@@ -97,7 +111,7 @@
       font-size: 16px;
       padding: 12px 15px;
     }
-    #next-btn, #restart-btn {
+    #restart-btn {
       font-size: 18px;
       padding: 12px;
     }
@@ -110,10 +124,10 @@
 
 <div id="quiz-container">
   <div id="question-number"></div>
+  <div id="timer"></div>
   <div id="question-text"></div>
   <div class="options" id="options"></div>
-  <button id="next-btn" disabled>التالي</button>
-  <button id="restart-btn" style="display:none;">أعد الاختبار</button>
+  <button id="restart-btn">أعد الاختبار</button>
   <div id="result"></div>
 </div>
 
@@ -142,69 +156,104 @@
     {question:"ما هو اسم أكبر محيط في العالم؟",options:["المحيط الأطلسي", "المحيط الهادئ", "المحيط الهندي", "المحيط المتجمد"],answer:1},
     {question:"ما هو اسم أكبر جبل في العالم؟",options:["إيفرست", "كليمنجارو", "مونت بلانك", "آكونكاجوا"],answer:0},
     {question:"ما هي عاصمة مصر؟",options:["الإسكندرية", "القاهرة", "الأقصر", "أسوان"],answer:1},
-    // ... أضفت فقط 24 هنا عشان الاختصار لكن عندك الـ200 جاهزين،
-    // لو تريدهم كاملين أضيفهم لك مباشرة بدون حذف
   ];
 
-  // لو تحب ارسل لي الأسئلة كاملة عشان أضيفهم 1:1 بدون حذف، أو تقدر تضيف بنفس الطريقة داخل مصفوفة questions
-  
   let currentIndex = 0;
   let score = 0;
-  let selectedOption = null;
+  let timer;
+  const timerDuration = 10; // 10 ثواني لكل سؤال
+  let timeLeft = timerDuration;
 
   const questionNumberElem = document.getElementById("question-number");
   const questionTextElem = document.getElementById("question-text");
   const optionsElem = document.getElementById("options");
-  const nextBtn = document.getElementById("next-btn");
-  const restartBtn = document.getElementById("restart-btn");
+  const timerElem = document.getElementById("timer");
   const resultElem = document.getElementById("result");
+  const restartBtn = document.getElementById("restart-btn");
+
+  function startTimer() {
+    timeLeft = timerDuration;
+    timerElem.textContent = `الوقت المتبقي: ${timeLeft} ثواني`;
+    timer = setInterval(() => {
+      timeLeft--;
+      timerElem.textContent = `الوقت المتبقي: ${timeLeft} ثواني`;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        disableOptions();
+        showCorrectAnswer();
+        setTimeout(nextQuestion, 2000);
+      }
+    }, 1000);
+  }
 
   function loadQuestion() {
-    const currentQ = questions[currentIndex];
+    clearInterval(timer);
+    resultElem.textContent = "";
     questionNumberElem.textContent = `السؤال ${currentIndex + 1} من ${questions.length}`;
-    questionTextElem.textContent = currentQ.question;
+    questionTextElem.textContent = questions[currentIndex].question;
     optionsElem.innerHTML = "";
-    selectedOption = null;
-    nextBtn.disabled = true;
+    timeLeft = timerDuration;
 
-    currentQ.options.forEach((option, idx) => {
+    questions[currentIndex].options.forEach((option, idx) => {
       const btn = document.createElement("button");
       btn.textContent = option;
       btn.addEventListener("click", () => {
-        selectedOption = idx;
-        nextBtn.disabled = false;
-        Array.from(optionsElem.children).forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
+        clearInterval(timer);
+        handleAnswer(idx, btn);
       });
       optionsElem.appendChild(btn);
     });
+    startTimer();
   }
 
-  nextBtn.addEventListener("click", () => {
-    if (selectedOption === null) return;
-    if (selectedOption === questions[currentIndex].answer) score++;
+  function handleAnswer(selectedIdx, btn) {
+    disableOptions();
+    const correctIdx = questions[currentIndex].answer;
+    if (selectedIdx === correctIdx) {
+      score++;
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      // نبرز الإجابة الصحيحة
+      optionsElem.children[correctIdx].classList.add("correct");
+    }
+    setTimeout(nextQuestion, 2000);
+  }
+
+  function disableOptions() {
+    Array.from(optionsElem.children).forEach(btn => {
+      btn.disabled = true;
+      btn.classList.add("disabled");
+    });
+  }
+
+  function showCorrectAnswer() {
+    const correctIdx = questions[currentIndex].answer;
+    optionsElem.children[correctIdx].classList.add("correct");
+  }
+
+  function nextQuestion() {
     currentIndex++;
-    if (currentIndex === questions.length) {
+    if (currentIndex >= questions.length) {
       showResult();
     } else {
       loadQuestion();
     }
-  });
+  }
 
   function showResult() {
+    clearInterval(timer);
     questionNumberElem.style.display = "none";
     questionTextElem.style.display = "none";
     optionsElem.style.display = "none";
-    nextBtn.style.display = "none";
-
-    resultElem.style.display = "block";
-    restartBtn.style.display = "inline-block";
+    timerElem.style.display = "none";
 
     resultElem.innerHTML = `
       <h2>انتهى الاختبار!</h2>
       <p>لقد أجبت بشكل صحيح على <strong>${score}</strong> من أصل <strong>${questions.length}</strong> سؤال.</p>
       <p>النسبة: <strong>${((score / questions.length) * 100).toFixed(2)}%</strong></p>
     `;
+    restartBtn.style.display = "block";
   }
 
   restartBtn.addEventListener("click", () => {
@@ -213,8 +262,8 @@
     questionNumberElem.style.display = "block";
     questionTextElem.style.display = "block";
     optionsElem.style.display = "block";
-    nextBtn.style.display = "inline-block";
-    resultElem.style.display = "none";
+    timerElem.style.display = "block";
+    resultElem.textContent = "";
     restartBtn.style.display = "none";
     loadQuestion();
   });
