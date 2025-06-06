@@ -1,189 +1,114 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>تحدي الذكاء الفاخر</title>
+  <title>🔥 Genius Quiz</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Cairo', sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: 20px;
+      height: 100vh;
     }
-    .container {
-      background-color: rgba(0, 0, 0, 0.7);
+    .quiz-container {
+      background: rgba(255,255,255,0.05);
       padding: 30px;
       border-radius: 20px;
-      max-width: 800px;
-      width: 100%;
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+      width: 90%;
+      max-width: 600px;
       text-align: center;
-      animation: fadeIn 1s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
     h1 {
-      font-size: 2.2em;
-      margin-bottom: 20px;
-      color: #ffd700;
-    }
-    #question {
-      font-size: 1.4em;
+      font-size: 28px;
       margin-bottom: 20px;
     }
-    .option-btn {
-      background: #1abc9c;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      margin: 10px;
-      border-radius: 8px;
-      font-size: 1em;
+    .option {
+      background: rgba(255,255,255,0.15);
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: 0.3s;
     }
-    .option-btn:hover {
-      background: #16a085;
+    .option:hover {
+      background: rgba(255,255,255,0.3);
     }
     .correct {
-      background-color: #2ecc71 !important;
+      background-color: #28a745 !important;
     }
     .wrong {
-      background-color: #e74c3c !important;
+      background-color: #dc3545 !important;
     }
-    .disabled {
-      pointer-events: none;
-      opacity: 0.7;
-    }
-    #next-btn {
-      margin-top: 20px;
-      padding: 10px 25px;
-      font-size: 1.1em;
-      background-color: #2980b9;
-      border: none;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      display: none;
-    }
-    #result {
-      font-size: 1.4em;
-      margin-top: 20px;
-      display: none;
-      color: #f1c40f;
-    }
-    #progress {
-      margin-bottom: 15px;
-      font-weight: bold;
-      color: #ccc;
+    .loading {
+      font-size: 20px;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🔥 تحدي الذكاء العام 🔥</h1>
-    <div id="progress"></div>
-    <div id="question">...جارٍ تحميل السؤال</div>
-    <div id="options"></div>
-    <button id="next-btn">السؤال التالي</button>
-    <div id="result"></div>
+  <div class="quiz-container" id="quiz">
+    <div class="loading">جاري تحميل السؤال...</div>
   </div>
 
-<script>
-const originalQuestions = [
-  { q: "ما هي عاصمة أستراليا؟", options: ["كانبرا", "سيدني", "ملبورن", "بيرث"], a: "كانبرا" },
-  { q: "من هو مكتشف الجاذبية؟", options: ["نيوتن", "أينشتاين", "غاليلو", "كوبرنيكوس"], a: "نيوتن" },
-  { q: "كم عدد كواكب المجموعة الشمسية؟", options: ["7", "8", "9", "10"], a: "8" },
-  { q: "أكبر محيط في العالم؟", options: ["الأطلسي", "الهادئ", "الهندي", "المتجمد"], a: "الهادئ" },
-  { q: "كم عدد أضلاع المثلث؟", options: ["2", "3", "4", "5"], a: "3" },
-  { q: "من مؤلف رواية البؤساء؟", options: ["فيكتور هوجو", "دوستويفسكي", "تولستوي", "شكسبير"], a: "فيكتور هوجو" },
-  { q: "ما هو العنصر الكيميائي H؟", options: ["هيدروجين", "هيليوم", "هالوجين", "حديد"], a: "هيدروجين" },
-  { q: "كم ثانية في الدقيقة؟", options: ["60", "100", "30", "120"], a: "60" },
-  { q: "ما هو الحيوان الذي لا يصدر صوتًا؟", options: ["الزرافة", "الثعبان", "السلحفاة", "الحوت"], a: "الزرافة" },
-  { q: "في أي قارة تقع مصر؟", options: ["آسيا", "أوروبا", "أفريقيا", "أمريكا"], a: "أفريقيا" }
-];
+  <script>
+    const quiz = document.getElementById('quiz');
+    let usedQuestions = new Set();
 
-function generateQuestions(count) {
-  const generated = [];
-  while (generated.length < count) {
-    const copy = JSON.parse(JSON.stringify(originalQuestions));
-    shuffle(copy);
-    for (const q of copy) {
-      if (generated.length >= count) break;
-      generated.push(q);
+    function decode(str) {
+      const txt = document.createElement('textarea');
+      txt.innerHTML = str;
+      return txt.value;
     }
-  }
-  return generated;
-}
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
+    async function loadQuestion() {
+      quiz.innerHTML = '<div class="loading">جاري تحميل السؤال...</div>';
+      const res = await fetch('https://opentdb.com/api.php?amount=1&type=multiple');
+      const data = await res.json();
+      const q = data.results[0];
 
-const questions = generateQuestions(65);
-let currentQuestion = 0;
-let score = 0;
+      const question = decode(q.question);
+      const correct = decode(q.correct_answer);
+      let options = q.incorrect_answers.map(decode);
+      options.push(correct);
+      options = shuffle(options);
 
-const questionElem = document.getElementById("question");
-const optionsElem = document.getElementById("options");
-const nextBtn = document.getElementById("next-btn");
-const progress = document.getElementById("progress");
-const result = document.getElementById("result");
+      if (usedQuestions.has(question)) {
+        return loadQuestion(); // لو اتكرر يعيد
+      }
+      usedQuestions.add(question);
 
-function showQuestion() {
-  if (currentQuestion >= questions.length) return showResult();
-  const q = questions[currentQuestion];
-  progress.textContent = `السؤال ${currentQuestion + 1} من ${questions.length}`;
-  questionElem.textContent = q.q;
-  optionsElem.innerHTML = "";
-  shuffle(q.options);
-  q.options.forEach(option => {
-    const btn = document.createElement("button");
-    btn.classList.add("option-btn");
-    btn.textContent = option;
-    btn.onclick = () => selectAnswer(btn, q.a);
-    optionsElem.appendChild(btn);
-  });
-}
+      quiz.innerHTML = `
+        <h1>${question}</h1>
+        ${options.map(opt => `<div class="option" onclick="checkAnswer(this, '${correct.replace(/'/g, "\\'")}')">${opt}</div>`).join('')}
+      `;
+    }
 
-function selectAnswer(selectedBtn, correctAnswer) {
-  const buttons = document.querySelectorAll(".option-btn");
-  buttons.forEach(btn => {
-    btn.classList.add("disabled");
-    if (btn.textContent === correctAnswer) btn.classList.add("correct");
-  });
-  if (selectedBtn.textContent !== correctAnswer) selectedBtn.classList.add("wrong");
-  score += selectedBtn.textContent === correctAnswer ? 1 : 0;
-  nextBtn.style.display = "inline-block";
-}
+    function checkAnswer(element, correct) {
+      const options = document.querySelectorAll('.option');
+      options.forEach(opt => {
+        opt.style.pointerEvents = "none";
+        if (opt.innerText === correct) opt.classList.add('correct');
+        else opt.classList.add('wrong');
+      });
 
-nextBtn.addEventListener("click", () => {
-  currentQuestion++;
-  nextBtn.style.display = "none";
-  showQuestion();
-});
+      setTimeout(loadQuestion, 1500);
+    }
 
-function showResult() {
-  questionElem.style.display = "none";
-  optionsElem.style.display = "none";
-  nextBtn.style.display = "none";
-  progress.style.display = "none";
-  result.style.display = "block";
-  result.innerHTML = `🔥 حصلت على <strong>${score}</strong> من <strong>${questions.length}</strong> سؤال!`;
-}
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
 
-showQuestion();
-</script>
+    loadQuestion();
+  </script>
 </body>
 </html>
